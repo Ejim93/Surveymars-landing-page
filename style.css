@@ -298,15 +298,22 @@ footer a:hover {
 @media (max-width: 600px) {
     nav {
         padding: 15px 10px;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
     nav a {
-        margin-left: 8px;
-        font-size: 14px;
+        margin-left: 0;
+        font-size: 13px;
+        padding: 5px;
     }
 
     .logo {
+        width: 100%;
+        text-align: center;
         font-size: 26px;
+        margin-bottom: 5px;
     }
 }
 @media (max-width: 600px) {
