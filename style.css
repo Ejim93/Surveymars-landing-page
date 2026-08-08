@@ -344,3 +344,13 @@ footer a:hover {
         font-size: 14px;
     }
 }
+#learning {
+    text-align: center;
+}
+
+#learning .cards {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
