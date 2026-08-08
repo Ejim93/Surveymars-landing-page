@@ -5,14 +5,15 @@ body {
     color: #333;
 }
 
-header{
+header {
     background: linear-gradient(135deg, #2E7D32, #4CAF50);
     color: white;
-    padding: 20px 40px 60px
-    nav {
+    padding: 20px 40px 60px;
+}
+
+nav {
     background-color: #1f7a4c;
     padding: 15px 20px;
-
     position: sticky;
     top: 0;
     z-index: 1000;
