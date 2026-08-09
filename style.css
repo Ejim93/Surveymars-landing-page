@@ -207,12 +207,15 @@ nav a:hover{
 .join:active {
     transform: scale(0.98);
 }
-.logo{
-    font-size: 32px;
-    font-weight: bold;
-    color: white;
-    letter-spacing: 2px;
-    font-family: Arial, sans-serif;
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    width: 180px;
+    height: auto;
+    display: block;
 }
 .trust-badge{
     margin: 20px 0;
@@ -306,15 +309,18 @@ footer a:hover {
         margin-left: 0;
         font-size: 13px;
         padding: 5px;
-    }
-
+@media (max-width: 600px) {
     .logo {
         width: 100%;
-        text-align: center;
-        font-size: 26px;
+        justify-content: center;
         margin-bottom: 5px;
     }
-}
+
+    .logo img {
+        width: 150px;
+    }
+}    
+
 @media (max-width: 600px) {
     .cards {
         flex-direction: column;
@@ -353,8 +359,4 @@ footer a:hover {
     justify-content: center;
     gap: 20px;
     flex-wrap: wrap;
-}
-.logo::before {
-    content: "🌍";
-    margin-right: 8px;
 }
