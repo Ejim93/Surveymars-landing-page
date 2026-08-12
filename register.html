@@ -14,7 +14,8 @@
 
     <header>
         <div class="logo">
-            <img src="surveyMars-logo.png" alt="Surveymars Logo">
+            <img src="surveymars-logo.png"
+                 alt="SurveyMars - Mentorship & Opportunities">
         </div>
     </header>
 
@@ -28,7 +29,7 @@
                 opportunities, mentorship and other opportunities.
             </p>
 
-            <form>
+            <form id="registerForm">
 
                 <label for="fullname">Full Name</label>
                 <input
@@ -54,6 +55,7 @@
                     id="password"
                     name="password"
                     placeholder="Create a password"
+                    minlength="6"
                     required
                 >
 
@@ -63,10 +65,13 @@
                     id="confirm-password"
                     name="confirm-password"
                     placeholder="Confirm your password"
+                    minlength="6"
                     required
                 >
 
                 <button type="submit">Create Account</button>
+
+                <p id="message"></p>
 
             </form>
 
@@ -77,6 +82,128 @@
 
         </section>
     </main>
+
+
+    <!-- Firebase Authentication -->
+    <script type="module">
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+        import {
+            getAuth,
+            createUserWithEmailAndPassword,
+            updateProfile
+        } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+
+        // SurveyMars Firebase configuration
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDfY0BVSt_NIqUf3rwgPlRRXLJFLq7-7M8",
+            authDomain: "surveymars-11698.firebaseapp.com",
+            projectId: "surveymars-11698",
+            storageBucket: "surveymars-11698.firebasestorage.app",
+            messagingSenderId: "503727549780",
+            appId: "1:503727549780:web:326a85d7b1f7eca730acc1"
+        };
+
+
+        // Initialize Firebase
+
+        const app = initializeApp(firebaseConfig);
+
+        const auth = getAuth(app);
+
+
+        // Registration form
+
+        const registerForm = document.getElementById("registerForm");
+        const message = document.getElementById("message");
+
+
+        registerForm.addEventListener("submit", async (event) => {
+
+            event.preventDefault();
+
+
+            const fullname = document.getElementById("fullname").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+            const confirmPassword =
+                document.getElementById("confirm-password").value;
+
+
+            // Check passwords
+
+            if (password !== confirmPassword) {
+
+                message.textContent = "Passwords do not match.";
+                return;
+
+            }
+
+
+            try {
+
+                message.textContent = "Creating your account...";
+
+
+                // Create Firebase account
+
+                const userCredential =
+                    await createUserWithEmailAndPassword(
+                        auth,
+                        email,
+                        password
+                    );
+
+
+                // Save user's full name to Firebase profile
+
+                await updateProfile(userCredential.user, {
+                    displayName: fullname
+                });
+
+
+                message.textContent =
+                    "Account created successfully! Welcome to SurveyMars.";
+
+
+                registerForm.reset();
+
+
+            } catch (error) {
+
+                console.error(error);
+
+
+                if (error.code === "auth/email-already-in-use") {
+
+                    message.textContent =
+                        "This email is already registered. Please log in.";
+
+                } else if (error.code === "auth/invalid-email") {
+
+                    message.textContent =
+                        "Please enter a valid email address.";
+
+                } else if (error.code === "auth/weak-password") {
+
+                    message.textContent =
+                        "Password must contain at least 6 characters.";
+
+                } else {
+
+                    message.textContent =
+                        "Account creation failed. Please try again.";
+
+                }
+
+            }
+
+        });
+
+    </script>
 
 </body>
 
