@@ -87,124 +87,159 @@
     <!-- Firebase Authentication -->
     <script type="module">
 
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
-        import {
-            getAuth,
-            createUserWithEmailAndPassword,
-            updateProfile
-        } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+    import {
+        getAuth,
+        createUserWithEmailAndPassword,
+        updateProfile
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
-
-        // SurveyMars Firebase configuration
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyDfY0BVSt_NIqUf3rwgPlRRXLJFLq7-7M8",
-            authDomain: "surveymars-11698.firebaseapp.com",
-            projectId: "surveymars-11698",
-            storageBucket: "surveymars-11698.firebasestorage.app",
-            messagingSenderId: "503727549780",
-            appId: "1:503727549780:web:326a85d7b1f7eca730acc1"
-        };
+    import {
+        getFirestore,
+        doc,
+        setDoc,
+        serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
-        // Initialize Firebase
+    // SurveyMars Firebase configuration
 
-        const app = initializeApp(firebaseConfig);
-
-        const auth = getAuth(app);
-
-
-        // Registration form
-
-        const registerForm = document.getElementById("registerForm");
-        const message = document.getElementById("message");
-
-
-        registerForm.addEventListener("submit", async (event) => {
-
-            event.preventDefault();
+    const firebaseConfig = {
+        apiKey: "AIzaSyDfY0BVSt_NIqUf3rwgPlRRXLJFLq7-7M8",
+        authDomain: "surveymars-11698.firebaseapp.com",
+        projectId: "surveymars-11698",
+        storageBucket: "surveymars-11698.firebasestorage.app",
+        messagingSenderId: "503727549780",
+        appId: "1:503727549780:web:326a85d7b1f7eca730acc1"
+    };
 
 
-            const fullname = document.getElementById("fullname").value.trim();
-            const email = document.getElementById("email").value.trim();
-            const password = document.getElementById("password").value;
-            const confirmPassword =
-                document.getElementById("confirm-password").value;
+    // Initialize Firebase
+
+    const app = initializeApp(firebaseConfig);
+
+    const auth = getAuth(app);
+
+    const db = getFirestore(app);
 
 
-            // Check passwords
+    // Registration form
 
-            if (password !== confirmPassword) {
-
-                message.textContent = "Passwords do not match.";
-                return;
-
-            }
+    const registerForm = document.getElementById("registerForm");
+    const message = document.getElementById("message");
 
 
-            try {
+    registerForm.addEventListener("submit", async (event) => {
 
-                message.textContent = "Creating your account...";
-
-
-                // Create Firebase account
-
-                const userCredential =
-                    await createUserWithEmailAndPassword(
-                        auth,
-                        email,
-                        password
-                    );
+        event.preventDefault();
 
 
-                // Save user's full name to Firebase profile
+        const fullname =
+            document.getElementById("fullname").value.trim();
 
-                await updateProfile(userCredential.user, {
-                    displayName: fullname
-                });
+        const email =
+            document.getElementById("email").value.trim();
 
+        const password =
+            document.getElementById("password").value;
+
+        const confirmPassword =
+            document.getElementById("confirm-password").value;
+
+
+        // Check passwords
+
+        if (password !== confirmPassword) {
+
+            message.textContent = "Passwords do not match.";
+
+            return;
+        }
+
+
+        try {
+
+            message.textContent = "Creating your account...";
+
+
+            // Create Firebase Authentication account
+
+            const userCredential =
+                await createUserWithEmailAndPassword(
+                    auth,
+                    email,
+                    password
+                );
+
+
+            const user = userCredential.user;
+
+
+            // Save user's name to Firebase profile
+
+            await updateProfile(user, {
+                displayName: fullname
+            });
+
+
+            // Create the user's Firestore document
+
+            await setDoc(doc(db, "users", user.uid), {
+
+                fullName: fullname,
+
+                email: user.email,
+
+                createdAt: serverTimestamp()
+
+            });
+
+
+            message.textContent =
+                "Account created successfully! Welcome to SurveyMars.";
+
+
+            registerForm.reset();
+
+
+        } catch (error) {
+
+            console.error(error);
+
+
+            if (error.code === "auth/email-already-in-use") {
 
                 message.textContent =
-                    "Account created successfully! Welcome to SurveyMars.";
+                    "This email is already registered. Please log in.";
 
+            } else if (error.code === "auth/invalid-email") {
 
-                registerForm.reset();
+                message.textContent =
+                    "Please enter a valid email address.";
 
+            } else if (error.code === "auth/weak-password") {
 
-            } catch (error) {
+                message.textContent =
+                    "Password must contain at least 6 characters.";
 
-                console.error(error);
+            } else if (error.code === "permission-denied") {
 
+                message.textContent =
+                    "Account created, but your profile could not be saved.";
 
-                if (error.code === "auth/email-already-in-use") {
+            } else {
 
-                    message.textContent =
-                        "This email is already registered. Please log in.";
-
-                } else if (error.code === "auth/invalid-email") {
-
-                    message.textContent =
-                        "Please enter a valid email address.";
-
-                } else if (error.code === "auth/weak-password") {
-
-                    message.textContent =
-                        "Password must contain at least 6 characters.";
-
-                } else {
-
-                    message.textContent =
-                        "Account creation failed. Please try again.";
-
-                }
+                message.textContent =
+                    "Account creation failed. Please try again.";
 
             }
 
-        });
+        }
 
-    </script>
+    });
 
+</script>
 </body>
 
 </html>
