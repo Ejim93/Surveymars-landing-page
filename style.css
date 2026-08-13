@@ -452,3 +452,86 @@ footer a:hover {
         margin: 5px;
     }
 }
+/* =========================
+   SURVEYMARS DASHBOARD
+   ========================= */
+
+.dashboard {
+    max-width: 1000px;
+    margin: 50px auto;
+    padding: 40px 25px;
+    text-align: center;
+}
+
+.dashboard h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+#welcomeMessage {
+    font-size: 18px;
+    margin-bottom: 35px;
+}
+
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    margin-bottom: 35px;
+}
+
+.dashboard-card {
+    background: white;
+    padding: 30px 20px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.10);
+}
+
+.dashboard-card h2 {
+    font-size: 21px;
+    margin-bottom: 15px;
+}
+
+.dashboard-card p {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#logoutButton {
+    background: #f28c28;
+    color: white;
+    border: none;
+    padding: 13px 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#logoutButton:hover {
+    opacity: 0.85;
+}
+
+
+/* Mobile phones */
+
+@media (max-width: 600px) {
+
+    .dashboard {
+        margin: 25px auto;
+        padding: 25px 15px;
+    }
+
+    .dashboard h1 {
+        font-size: 28px;
+    }
+
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .dashboard-card {
+        padding: 25px 15px;
+    }
+
+}
