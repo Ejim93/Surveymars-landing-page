@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SurveyMars Admin</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        <img src="surveymars-logo.png"
+             alt="SurveyMars - Mentorship & Opportunities">
+    </div>
+
+</header>
+
+
+<main>
+
+    <section class="dashboard">
+
+        <h1>SurveyMars Admin</h1>
+
+        <p id="adminMessage">
+            Checking administrator access...
+        </p>
+
+
+        <div id="adminPanel" style="display: none;">
+
+            <div class="dashboard-card">
+
+                <h2>📋 Create Survey</h2>
+
+                <form id="surveyForm">
+
+                    <label for="title">
+                        Survey Title
+                    </label>
+
+                    <input
+                        type="text"
+                        id="title"
+                        placeholder="Enter survey title"
+                        required
+                    >
+
+
+                    <label for="description">
+                        Survey Description
+                    </label>
+
+                    <textarea
+                        id="description"
+                        placeholder="Describe the survey"
+                        rows="5"
+                        required
+                    ></textarea>
+
+
+                    <label for="surveyLink">
+                        Survey Link
+                    </label>
+
+                    <input
+                        type="url"
+                        id="surveyLink"
+                        placeholder="https://..."
+                        required
+                    >
+
+
+                    <label for="points">
+                        Points
+                    </label>
+
+                    <input
+                        type="number"
+                        id="points"
+                        min="0"
+                        value="10"
+                        required
+                    >
+
+
+                    <label for="status">
+                        Status
+                    </label>
+
+                    <select id="status" required>
+
+                        <option value="draft">
+                            Draft
+                        </option>
+
+                        <option value="published">
+                            Published
+                        </option>
+
+                    </select>
+
+
+                    <button type="submit">
+                        Create Survey
+                    </button>
+
+                </form>
+
+                <p id="surveyMessage"></p>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                <h2>📊 Your Surveys</h2>
+
+                <div id="surveyList">
+                    Loading surveys...
+                </div>
+
+            </div>
+
+
+            <button id="logoutButton">
+                Log Out
+            </button>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script type="module">
+
+    import { initializeApp }
+        from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+
+    import {
+        getAuth,
+        onAuthStateChanged,
+        signOut
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+
+    import {
+        getFirestore,
+        collection,
+        addDoc,
+        getDocs,
+        serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+    // SurveyMars Firebase configuration
+
+    const firebaseConfig = {
+
+        apiKey: "AIzaSyDfY0BVSt_NIqUf3rwgPlRRXLJFLq7-7M8",
+
+        authDomain: "surveymars-11698.firebaseapp.com",
+
+        projectId: "surveymars-11698",
+
+        storageBucket: "surveymars-11698.firebasestorage.app",
+
+        messagingSenderId: "503727549780",
+
+        appId: "1:503727549780:web:326a85d7b1f7eca730acc1"
+
+    };
+
+
+    // Initialize Firebase
+
+    const app = initializeApp(firebaseConfig);
+
+    const auth = getAuth(app);
+
+    const db = getFirestore(app);
+
+
+    // Your administrator UID
+
+    const ADMIN_UID =
+        "7S1e5aUxynaSDkzDiNNmXYaD1IH3";
+
+
+    const adminMessage =
+        document.getElementById("adminMessage");
+
+    const adminPanel =
+        document.getElementById("adminPanel");
+
+    const surveyForm =
+        document.getElementById("surveyForm");
+
+    const surveyMessage =
+        document.getElementById("surveyMessage");
+
+    const surveyList =
+        document.getElementById("surveyList");
+
+    const logoutButton =
+        document.getElementById("logoutButton");
+
+
+    // Check administrator access
+
+    onAuthStateChanged(auth, async (user) => {
+
+        if (!user) {
+
+            adminMessage.textContent =
+                "Please log in first.";
+
+            setTimeout(() => {
+
+                window.location.href =
+                    "login.html";
+
+            }, 1500);
+
+            return;
+        }
+
+
+        if (user.uid !== ADMIN_UID) {
+
+            adminMessage.textContent =
+                "Access denied. Administrator access only.";
+
+            setTimeout(() => {
+
+                window.location.href =
+                    "dashboard.html";
+
+            }, 2000);
+
+            return;
+        }
+
+
+        adminMessage.textContent =
+            "Administrator access confirmed.";
+
+        adminPanel.style.display =
+            "block";
+
+
+        await loadSurveys();
+
+    });
+
+
+    // Create survey
+
+    surveyForm.addEventListener("submit", async (event) => {
+
+        event.preventDefault();
+
+
+        const title =
+            document.getElementById("title").value.trim();
+
+        const description =
+            document.getElementById("description").value.trim();
+
+        const surveyLink =
+            document.getElementById("surveyLink").value.trim();
+
+        const points =
+            Number(document.getElementById("points").value);
+
+        const status =
+            document.getElementById("status").value;
+
+
+        try {
+
+            surveyMessage.textContent =
+                "Creating survey...";
+
+
+            await addDoc(
+                collection(db, "surveys"),
+                {
+
+                    title: title,
+
+                    description: description,
+
+                    surveyLink: surveyLink,
+
+                    points: points,
+
+                    status: status,
+
+                    createdBy: auth.currentUser.uid,
+
+                    createdAt: serverTimestamp()
+
+                }
+            );
+
+
+            surveyMessage.textContent =
+                "Survey created successfully!";
+
+
+            surveyForm.reset();
+
+
+            document.getElementById("points").value =
+                10;
+
+
+            await loadSurveys();
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            surveyMessage.textContent =
+                "Unable to create survey. Please try again.";
+
+        }
+
+    });
+
+
+    // Load surveys
+
+    async function loadSurveys() {
+
+        try {
+
+            const snapshot =
+                await getDocs(
+                    collection(db, "surveys")
+                );
+
+
+            if (snapshot.empty) {
+
+                surveyList.innerHTML =
+                    "<p>No surveys created yet.</p>";
+
+                return;
+            }
+
+
+            surveyList.innerHTML = "";
+
+
+            snapshot.forEach((docSnapshot) => {
+
+                const survey =
+                    docSnapshot.data();
+
+
+                const card =
+                    document.createElement("div");
+
+
+                card.className =
+                    "dashboard-card";
+
+
+                card.innerHTML = `
+
+                    <h3>
+                        ${escapeHTML(survey.title)}
+                    </h3>
+
+                    <p>
+                        ${escapeHTML(survey.description)}
+                    </p>
+
+                    <p>
+                        <strong>Points:</strong>
+                        ${survey.points}
+                    </p>
+
+                    <p>
+                        <strong>Status:</strong>
+                        ${escapeHTML(survey.status)}
+                    </p>
+
+                `;
+
+
+                surveyList.appendChild(card);
+
+            });
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            surveyList.innerHTML =
+                "<p>Unable to load surveys.</p>";
+
+        }
+
+    }
+
+
+    // Protect survey text displayed on the page
+
+    function escapeHTML(text) {
+
+        const div =
+            document.createElement("div");
+
+        div.textContent =
+            text || "";
+
+        return div.innerHTML;
+
+    }
+
+
+    // Log out
+
+    logoutButton.addEventListener(
+        "click",
+        async () => {
+
+            try {
+
+                await signOut(auth);
+
+                window.location.href =
+                    "login.html";
+
+            } catch (error) {
+
+                console.error(error);
+
+            }
+
+        }
+    );
+
+</script>
+
+</body>
+
+</html>
