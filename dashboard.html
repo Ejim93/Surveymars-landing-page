@@ -33,35 +33,114 @@
         </p>
 
 
-        <div class="dashboard-cards">
+        <!-- Points -->
 
-            <div class="dashboard-card">
-                <h2>⭐ Points</h2>
-                <p id="points">0</p>
-            </div>
+        <div class="dashboard-card">
 
+            <h2>⭐ Points</h2>
 
-            <div class="dashboard-card">
-                <h2>📋 Available Surveys</h2>
-                <p>Coming soon</p>
-            </div>
+            <p id="points">
+                0
+            </p>
 
-
-            <div class="dashboard-card">
-                <h2>✅ Completed Surveys</h2>
-                <p>0</p>
-            </div>
-
-
-            <div class="dashboard-card">
-                <h2>🎁 Rewards</h2>
-                <p>Coming soon</p>
-            </div>
+            <p>
+                Your points balance will appear here.
+            </p>
 
         </div>
 
 
-       <a href="profile.html" class="profile-button">👤 My Profile</a>
+        <!-- Surveys -->
+
+        <div class="dashboard-card">
+
+            <h2>📋 Surveys</h2>
+
+            <p>
+                Explore available surveys and track your completed surveys.
+            </p>
+
+            <strong>
+                Coming Soon
+            </strong>
+
+        </div>
+
+
+        <!-- Mentorship -->
+
+        <div class="dashboard-card">
+
+            <h2>🎓 Mentorship</h2>
+
+            <p>
+                Discover mentorship opportunities and guidance available through SurveyMars.
+            </p>
+
+            <strong>
+                Coming Soon
+            </strong>
+
+        </div>
+
+
+        <!-- Opportunities -->
+
+        <div class="dashboard-card">
+
+            <h2>🚀 Opportunities</h2>
+
+            <p>
+                Explore verified opportunities that may support your career, skills or business goals.
+            </p>
+
+            <strong>
+                Coming Soon
+            </strong>
+
+        </div>
+
+
+        <!-- Rewards -->
+
+        <div class="dashboard-card">
+
+            <h2>🎁 Rewards</h2>
+
+            <p>
+                Your eligible rewards and redemption options will appear here.
+            </p>
+
+            <strong>
+                Coming Soon
+            </strong>
+
+        </div>
+
+
+        <!-- Notifications -->
+
+        <div class="dashboard-card">
+
+            <h2>🔔 Notifications</h2>
+
+            <p>
+                You currently have no new notifications.
+            </p>
+
+        </div>
+
+
+        <!-- Profile -->
+
+        <a href="profile.html"
+           class="profile-button">
+            👤 My Profile
+        </a>
+
+
+        <!-- Logout -->
+
         <button id="logoutButton">
             Log Out
         </button>
@@ -76,6 +155,7 @@
     import { initializeApp }
         from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
+
     import {
         getAuth,
         onAuthStateChanged,
@@ -84,12 +164,19 @@
 
 
     const firebaseConfig = {
+
         apiKey: "AIzaSyDfY0BVSt_NIqUf3rwgPlRRXLJFLq7-7M8",
+
         authDomain: "surveymars-11698.firebaseapp.com",
+
         projectId: "surveymars-11698",
+
         storageBucket: "surveymars-11698.firebasestorage.app",
+
         messagingSenderId: "503727549780",
+
         appId: "1:503727549780:web:326a85d7b1f7eca730acc1"
+
     };
 
 
@@ -119,8 +206,6 @@
                 "! Welcome to your SurveyMars dashboard.";
 
         } else {
-
-            // User is not logged in
 
             window.location.href = "login.html";
 
