@@ -44,21 +44,17 @@
             </p>
 
             <p>
-                Your points balance will appear here.
+                Your current points balance.
             </p>
 
         </div>
 
 
-        <!-- Surveys -->
+        <!-- Available Surveys -->
 
         <div class="dashboard-card">
 
             <h2>📋 Available Surveys</h2>
-
-            <p>
-                Complete available surveys and earn points.
-            </p>
 
             <div id="surveyList">
                 Loading available surveys...
@@ -168,11 +164,15 @@
         collection,
         query,
         where,
-        getDocs
+        getDocs,
+        addDoc,
+        serverTimestamp
     } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
-    // SurveyMars Firebase configuration
+    // ==============================
+    // FIREBASE CONFIGURATION
+    // ==============================
 
     const firebaseConfig = {
 
@@ -200,6 +200,10 @@
     const db = getFirestore(app);
 
 
+    // ==============================
+    // PAGE ELEMENTS
+    // ==============================
+
     const welcomeMessage =
         document.getElementById("welcomeMessage");
 
@@ -210,14 +214,15 @@
         document.getElementById("logoutButton");
 
 
-    // Check whether the user is logged in
+    // ==============================
+    // CHECK LOGIN
+    // ==============================
 
     onAuthStateChanged(auth, async (user) => {
 
         if (!user) {
 
-            window.location.href =
-                "login.html";
+            window.location.href = "login.html";
 
             return;
         }
@@ -232,14 +237,18 @@
             "! Welcome to your SurveyMars dashboard.";
 
 
-        await loadPublishedSurveys();
+        // Load published surveys
+
+        await loadSurveys();
 
     });
 
 
-    // Load published surveys
+    // ==============================
+    // LOAD PUBLISHED SURVEYS
+    // ==============================
 
-    async function loadPublishedSurveys() {
+    async function loadSurveys() {
 
         try {
 
@@ -280,31 +289,133 @@
                     "dashboard-card";
 
 
-                card.innerHTML = `
+                const title =
+                    document.createElement("h3");
 
-                    <h3>
-                        ${escapeHTML(survey.title)}
-                    </h3>
+                title.textContent =
+                    survey.title || "Survey";
 
-                    <p>
-                        ${escapeHTML(survey.description)}
-                    </p>
 
-                    <p>
-                        <strong>Points:</strong>
-                        ${survey.points}
-                    </p>
+                const description =
+                    document.createElement("p");
 
-                    <a
-                        href="${escapeHTML(survey.surveyLink)}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="join"
-                    >
-                        Take Survey
-                    </a>
+                description.textContent =
+                    survey.description || "";
 
-                `;
+
+                const points =
+                    document.createElement("p");
+
+                points.innerHTML =
+                    "<strong>⭐ Reward:</strong> " +
+                    Number(survey.points || 0) +
+                    " points";
+
+
+                const button =
+                    document.createElement("button");
+
+                button.textContent =
+                    "Take Survey";
+
+
+                // ==============================
+                // TAKE SURVEY
+                // ==============================
+
+                button.addEventListener("click", async () => {
+
+                    const user =
+                        auth.currentUser;
+
+
+                    if (!user) {
+
+                        alert(
+                            "Please log in again."
+                        );
+
+                        window.location.href =
+                            "login.html";
+
+                        return;
+                    }
+
+
+                    try {
+
+                        button.disabled = true;
+
+                        button.textContent =
+                            "Starting survey...";
+
+
+                        // Create participation record
+
+                        await addDoc(
+                            collection(
+                                db,
+                                "surveyCompletions"
+                            ),
+                            {
+
+                                userId:
+                                    user.uid,
+
+                                surveyId:
+                                    docSnapshot.id,
+
+                                status:
+                                    "started",
+
+                                points:
+                                    0,
+
+                                verified:
+                                    false,
+
+                                startedAt:
+                                    serverTimestamp()
+
+                            }
+                        );
+
+
+                        // Record created successfully
+
+                        window.location.href =
+                            survey.surveyLink;
+
+
+                    } catch (error) {
+
+                        console.error(error);
+
+
+                        button.disabled =
+                            false;
+
+
+                        button.textContent =
+                            "Take Survey";
+
+
+                        alert(
+                            "We could not record your survey participation. Please try again."
+                        );
+
+                    }
+
+                });
+
+
+                card.appendChild(title);
+
+                card.appendChild(description);
+
+                card.appendChild(points);
+
+                card.appendChild(button);
 
 
                 surveyList.appendChild(card);
@@ -317,29 +428,16 @@
             console.error(error);
 
             surveyList.innerHTML =
-                "<p>Unable to load surveys. Please try again later.</p>";
+                "<p>Unable to load surveys.</p>";
 
         }
 
     }
 
 
-    // Protect displayed text
-
-    function escapeHTML(text) {
-
-        const div =
-            document.createElement("div");
-
-        div.textContent =
-            text || "";
-
-        return div.innerHTML;
-
-    }
-
-
-    // Log out
+    // ==============================
+    // LOG OUT
+    // ==============================
 
     logoutButton.addEventListener(
         "click",
