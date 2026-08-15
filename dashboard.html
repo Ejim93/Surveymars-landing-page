@@ -160,14 +160,16 @@
 
 
     import {
-        getFirestore,
-        collection,
-        query,
-        where,
-        getDocs,
-        addDoc,
-        serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+    getFirestore,
+    collection,
+    query,
+    where,
+    getDocs,
+    addDoc,
+    serverTimestamp,
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
     // ==============================
@@ -205,13 +207,16 @@
     // ==============================
 
     const welcomeMessage =
-        document.getElementById("welcomeMessage");
+    document.getElementById("welcomeMessage");
 
-    const surveyList =
-        document.getElementById("surveyList");
+const pointsDisplay =
+    document.getElementById("points");
 
-    const logoutButton =
-        document.getElementById("logoutButton");
+const surveyList =
+    document.getElementById("surveyList");
+
+const logoutButton =
+    document.getElementById("logoutButton");
 
 
     // ==============================
@@ -233,13 +238,49 @@
 
 
         welcomeMessage.textContent =
-            "Hello, " + name +
-            "! Welcome to your SurveyMars dashboard.";
+    "Hello, " + name +
+    "! Welcome to your SurveyMars dashboard.";
 
 
-        // Load published surveys
+// Load user's points
 
-        await loadSurveys();
+try {
+
+    const userRef =
+        doc(db, "users", user.uid);
+
+    const userSnapshot =
+        await getDoc(userRef);
+
+    if (userSnapshot.exists()) {
+
+        const userData =
+            userSnapshot.data();
+
+        pointsDisplay.textContent =
+            Number(userData.points || 0);
+
+    } else {
+
+        pointsDisplay.textContent = "0";
+
+    }
+
+} catch (error) {
+
+    console.error(
+        "Could not load points:",
+        error
+    );
+
+    pointsDisplay.textContent = "0";
+
+}
+
+
+// Load published surveys
+
+await loadSurveys();
 
     });
 
