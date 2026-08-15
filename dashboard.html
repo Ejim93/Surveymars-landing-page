@@ -352,7 +352,7 @@
 
                         // Create participation record
 
-    const completionRef = await addDoc(
+const completionRef = await addDoc(
     collection(db, "surveyCompletions"),
     {
         userId: user.uid,
@@ -365,11 +365,16 @@
 );
 
 
-                        // Record created successfully
+// Send the completion ID to the survey page
 
-    const separator =
+const separator =
     survey.surveyLink.includes("?") ? "&" : "?";
 
+window.location.href =
+    survey.surveyLink +
+    separator +
+    "completionId=" +
+    encodeURIComponent(completionRef.id);
 window.location.href =
     survey.surveyLink +
     separator +
