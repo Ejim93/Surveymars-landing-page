@@ -352,39 +352,29 @@
 
                         // Create participation record
 
-                        await addDoc(
-                            collection(
-                                db,
-                                "surveyCompletions"
-                            ),
-                            {
-
-                                userId:
-                                    user.uid,
-
-                                surveyId:
-                                    docSnapshot.id,
-
-                                status:
-                                    "started",
-
-                                points:
-                                    0,
-
-                                verified:
-                                    false,
-
-                                startedAt:
-                                    serverTimestamp()
-
-                            }
-                        );
+    const completionRef = await addDoc(
+    collection(db, "surveyCompletions"),
+    {
+        userId: user.uid,
+        surveyId: docSnapshot.id,
+        status: "started",
+        points: 0,
+        verified: false,
+        startedAt: serverTimestamp()
+    }
+);
 
 
                         // Record created successfully
 
-                        window.location.href =
-                            survey.surveyLink;
+    const separator =
+    survey.surveyLink.includes("?") ? "&" : "?";
+
+window.location.href =
+    survey.surveyLink +
+    separator +
+    "completionId=" +
+    encodeURIComponent(completionRef.id);
 
 
                     } catch (error) {
