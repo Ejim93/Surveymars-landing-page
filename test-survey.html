@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>SurveyMars Test Survey</title>
 
     <style>
@@ -35,6 +37,11 @@
         button:hover {
             opacity: 0.9;
         }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 
@@ -50,18 +57,22 @@
 
     <h3>Question</h3>
 
-    <p>How interested are you in participating in online surveys?</p>
+    <p>
+        How interested are you in participating in online surveys?
+    </p>
 
     <label>
         <input type="radio" name="answer" value="Very interested">
         Very interested
     </label>
+
     <br><br>
 
     <label>
         <input type="radio" name="answer" value="Somewhat interested">
         Somewhat interested
     </label>
+
     <br><br>
 
     <label>
@@ -71,7 +82,7 @@
 
     <br><br>
 
-    <button onclick="completeSurvey()">
+    <button id="completeButton">
         Complete Survey
     </button>
 
@@ -79,22 +90,286 @@
 
 </div>
 
-<script>
-function completeSurvey() {
 
-    const answer = document.querySelector(
-        'input[name="answer"]:checked'
+<script type="module">
+
+    import {
+        initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+    import {
+        getAuth,
+        onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+    import {
+        getFirestore,
+        doc,
+        getDoc,
+        updateDoc,
+        increment,
+        serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+    // ==============================
+    // FIREBASE CONFIGURATION
+    // ==============================
+
+    const firebaseConfig = {
+
+        apiKey: "AIzaSyDfY0BVSt_NIqUf3rwgPlRRXLJFLq7-7M8",
+
+        authDomain: "surveymars-11698.firebaseapp.com",
+
+        projectId: "surveymars-11698",
+
+        storageBucket: "surveymars-11698.firebasestorage.app",
+
+        messagingSenderId: "503727549780",
+
+        appId: "1:503727549780:web:326a85d7b1f7eca730acc1"
+
+    };
+
+
+    const app = initializeApp(firebaseConfig);
+
+    const auth = getAuth(app);
+
+    const db = getFirestore(app);
+
+
+    // ==============================
+    // PAGE ELEMENTS
+    // ==============================
+
+    const completeButton =
+        document.getElementById("completeButton");
+
+    const message =
+        document.getElementById("message");
+
+
+    // ==============================
+    // GET COMPLETION ID
+    // ==============================
+
+    const urlParams =
+        new URLSearchParams(window.location.search);
+
+    const completionId =
+        urlParams.get("completionId");
+
+
+    // ==============================
+    // COMPLETE SURVEY
+    // ==============================
+
+    completeButton.addEventListener(
+        "click",
+        async () => {
+
+            const answer =
+                document.querySelector(
+                    'input[name="answer"]:checked'
+                );
+
+
+            if (!answer) {
+
+                message.textContent =
+                    "Please select an answer first.";
+
+                return;
+            }
+
+
+            if (!completionId) {
+
+                message.textContent =
+                    "Survey session could not be identified.";
+
+                return;
+            }
+
+
+            const user =
+                auth.currentUser;
+
+
+            if (!user) {
+
+                message.textContent =
+                    "Please log in again.";
+
+                return;
+            }
+
+
+            try {
+
+                completeButton.disabled = true;
+
+                completeButton.textContent =
+                    "Verifying...";
+
+
+                // Get the participation record
+
+                const completionRef =
+                    doc(
+                        db,
+                        "surveyCompletions",
+                        completionId
+                    );
+
+
+                const completionSnapshot =
+                    await getDoc(completionRef);
+
+
+                if (!completionSnapshot.exists()) {
+
+                    throw new Error(
+                        "Survey completion record not found."
+                    );
+
+                }
+
+
+                const completion =
+                    completionSnapshot.data();
+
+
+                // Prevent awarding points twice
+
+                if (completion.verified === true) {
+
+                    message.textContent =
+                        "This survey has already been completed.";
+
+                    return;
+                }
+
+
+                // Make sure the completion belongs
+                // to the logged-in member
+
+                if (completion.userId !== user.uid) {
+
+                    throw new Error(
+                        "This survey session does not belong to this account."
+                    );
+
+                }
+
+
+                // Get the survey reward
+
+                const surveyRef =
+                    doc(
+                        db,
+                        "surveys",
+                        completion.surveyId
+                    );
+
+
+                const surveySnapshot =
+                    await getDoc(surveyRef);
+
+
+                if (!surveySnapshot.exists()) {
+
+                    throw new Error(
+                        "Survey information not found."
+                    );
+
+                }
+
+
+                const survey =
+                    surveySnapshot.data();
+
+
+                const reward =
+                    Number(survey.points || 0);
+
+
+                // Update completion record
+
+                await updateDoc(
+                    completionRef,
+                    {
+
+                        status: "completed",
+
+                        points: reward,
+
+                        verified: true,
+
+                        completedAt:
+                            serverTimestamp()
+
+                    }
+                );
+
+
+                // Add points to member account
+
+                const userRef =
+                    doc(
+                        db,
+                        "users",
+                        user.uid
+                    );
+
+
+                await updateDoc(
+                    userRef,
+                    {
+                        points: increment(reward)
+                    }
+                );
+
+
+                message.textContent =
+                    "Survey completed successfully! " +
+                    reward +
+                    " points have been added to your SurveyMars balance.";
+
+
+                completeButton.textContent =
+                    "Survey Completed";
+
+
+                // Give the user time to see confirmation
+
+                setTimeout(() => {
+
+                    window.location.href =
+                        "dashboard.html";
+
+                }, 2500);
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                completeButton.disabled = false;
+
+                completeButton.textContent =
+                    "Complete Survey";
+
+                message.textContent =
+                    "We could not verify your survey completion. Please try again.";
+
+            }
+
+        }
     );
 
-    if (!answer) {
-        document.getElementById("message").textContent =
-            "Please select an answer first.";
-        return;
-    }
-
-    document.getElementById("message").textContent =
-        "Survey completed successfully. SurveyMars is verifying your completion...";
-}
 </script>
 
 </body>
