@@ -1,1 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SurveyMars Test Survey</title>
 
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7f6;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .survey-box {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+
+        button {
+            background: orange;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="survey-box">
+
+    <h1>SurveyMars Test Survey</h1>
+
+    <p>
+        This is a test survey created for the SurveyMars platform.
+    </p>
+
+    <h3>Question</h3>
+
+    <p>How interested are you in participating in online surveys?</p>
+
+    <label>
+        <input type="radio" name="answer" value="Very interested">
+        Very interested
+    </label>
+    <br><br>
+
+    <label>
+        <input type="radio" name="answer" value="Somewhat interested">
+        Somewhat interested
+    </label>
+    <br><br>
+
+    <label>
+        <input type="radio" name="answer" value="Not interested">
+        Not interested
+    </label>
+
+    <br><br>
+
+    <button onclick="completeSurvey()">
+        Complete Survey
+    </button>
+
+    <p id="message"></p>
+
+</div>
+
+<script>
+function completeSurvey() {
+
+    const answer = document.querySelector(
+        'input[name="answer"]:checked'
+    );
+
+    if (!answer) {
+        document.getElementById("message").textContent =
+            "Please select an answer first.";
+        return;
+    }
+
+    document.getElementById("message").textContent =
+        "Survey completed successfully. SurveyMars is verifying your completion...";
+}
+</script>
+
+</body>
+</html>
