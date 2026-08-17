@@ -110,17 +110,29 @@
                 message.textContent = "Logging you in...";
 
 
-                await signInWithEmailAndPassword(
-                    auth,
-                    email,
-                    password
-                );
+                const userCredential =
+    await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+    );
 
+const user = userCredential.user;
 
-                message.textContent =
+message.textContent =
     "Login successful! Welcome back to SurveyMars.";
 
-window.location.href = "dashboard.html";
+if (
+    user.uid === "7S1e5aUxynaSDkzDiNNmXYaD1IH3"
+) {
+
+    window.location.href = "admin.html";
+
+} else {
+
+    window.location.href = "dashboard.html";
+
+}
 
 
             } catch (error) {
