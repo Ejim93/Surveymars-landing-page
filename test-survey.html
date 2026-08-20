@@ -5,372 +5,412 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>SurveyMars Test Survey</title>
+    <title>Join SurveyMars</title>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f7f6;
-            text-align: center;
-            padding: 40px 20px;
-        }
-
-        .survey-box {
-            max-width: 600px;
-            margin: auto;
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-        }
-
-        button {
-            background: orange;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            opacity: 0.9;
-        }
-
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="survey-box">
+    <header>
+        <div class="logo">
+            <img src="surveymars-logo.png"
+                 alt="SurveyMars - Mentorship & Opportunities">
+        </div>
+    </header>
 
-    <h1>SurveyMars Test Survey</h1>
+    <main>
+        <section class="register-section">
 
-    <p>
-        This is a test survey created for the SurveyMars platform.
-    </p>
+            <h1>Join SurveyMars</h1>
 
-    <h3>Question</h3>
+            <p>
+                Create your free account and discover survey
+                opportunities, mentorship and other opportunities.
+            </p>
 
-    <p>
-        How interested are you in participating in online surveys?
-    </p>
+            <form id="registerForm">
 
-    <label>
-        <input type="radio" name="answer" value="Very interested">
-        Very interested
-    </label>
+                <label for="fullname">Full Name</label>
 
-    <br><br>
+                <input
+                    type="text"
+                    id="fullname"
+                    name="fullname"
+                    placeholder="Enter your full name"
+                    required
+                >
 
-    <label>
-        <input type="radio" name="answer" value="Somewhat interested">
-        Somewhat interested
-    </label>
+                <label for="email">Email Address</label>
 
-    <br><br>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email address"
+                    required
+                >
 
-    <label>
-        <input type="radio" name="answer" value="Not interested">
-        Not interested
-    </label>
+                <label for="password">Password</label>
 
-    <br><br>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Create a password"
+                    minlength="6"
+                    required
+                >
 
-    <button id="completeButton">
-        Complete Survey
-    </button>
+                <label for="confirm-password">Confirm Password</label>
 
-    <p id="message"></p>
+                <input
+                    type="password"
+                    id="confirm-password"
+                    name="confirm-password"
+                    placeholder="Confirm your password"
+                    minlength="6"
+                    required
+                >
 
-</div>
+                <button type="submit" id="registerButton">
+                    Create Account
+                </button>
 
+                <p id="message"></p>
 
-<script type="module">
+            </form>
 
-    import {
-        initializeApp
-    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+            <p>
+                Already have an account?
+                <a href="login.html">Log in</a>
+            </p>
 
-    import {
-        getAuth,
-        onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+        </section>
+    </main>
 
-    import {
-        getFirestore,
-        doc,
-        getDoc,
-        updateDoc,
-        increment,
-        serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
+    <script type="module">
 
-    // ==============================
-    // FIREBASE CONFIGURATION
-    // ==============================
+        import {
+            initializeApp
+        } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
-    const firebaseConfig = {
+        import {
+            getAuth,
+            createUserWithEmailAndPassword,
+            updateProfile
+        } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
-        apiKey: "AIzaSyDfY0BVSt_NIqUf3rwgPlRRXLJFLq7-7M8",
+        import {
+            getFirestore,
+            doc,
+            setDoc,
+            serverTimestamp
+        } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-        authDomain: "surveymars-11698.firebaseapp.com",
 
-        projectId: "surveymars-11698",
+        // ==============================
+        // FIREBASE CONFIGURATION
+        // ==============================
 
-        storageBucket: "surveymars-11698.firebasestorage.app",
+        const firebaseConfig = {
 
-        messagingSenderId: "503727549780",
+            apiKey: "AIzaSyDfY0BVSt_NIqUf3rwgPlRRXLJFLq7-7M8",
 
-        appId: "1:503727549780:web:326a85d7b1f7eca730acc1"
+            authDomain: "surveymars-11698.firebaseapp.com",
 
-    };
+            projectId: "surveymars-11698",
 
+            storageBucket: "surveymars-11698.firebasestorage.app",
 
-    const app = initializeApp(firebaseConfig);
+            messagingSenderId: "503727549780",
 
-    const auth = getAuth(app);
+            appId: "1:503727549780:web:326a85d7b1f7eca730acc1"
 
-    const db = getFirestore(app);
+        };
 
 
-    // ==============================
-    // PAGE ELEMENTS
-    // ==============================
+        // ==============================
+        // INITIALIZE FIREBASE
+        // ==============================
 
-    const completeButton =
-        document.getElementById("completeButton");
+        const app = initializeApp(firebaseConfig);
 
-    const message =
-        document.getElementById("message");
+        const auth = getAuth(app);
 
+        const db = getFirestore(app);
 
-    // ==============================
-    // GET COMPLETION ID
-    // ==============================
 
-    const urlParams =
-        new URLSearchParams(window.location.search);
+        // ==============================
+        // PAGE ELEMENTS
+        // ==============================
 
-    const completionId =
-        urlParams.get("completionId");
+        const registerForm =
+            document.getElementById("registerForm");
 
+        const message =
+            document.getElementById("message");
 
-    // ==============================
-    // COMPLETE SURVEY
-    // ==============================
+        const registerButton =
+            document.getElementById("registerButton");
 
-    completeButton.addEventListener(
-        "click",
-        async () => {
 
-            const answer =
-                document.querySelector(
-                    'input[name="answer"]:checked'
-                );
+        // ==============================
+        // REGISTRATION
+        // ==============================
 
+        registerForm.addEventListener(
+            "submit",
+            async (event) => {
 
-            if (!answer) {
+                event.preventDefault();
 
-                message.textContent =
-                    "Please select an answer first.";
 
-                return;
-            }
+                const fullname =
+                    document.getElementById("fullname")
+                        .value
+                        .trim();
 
+                const email =
+                    document.getElementById("email")
+                        .value
+                        .trim();
 
-            if (!completionId) {
+                const password =
+                    document.getElementById("password")
+                        .value;
 
-                message.textContent =
-                    "Survey session could not be identified.";
+                const confirmPassword =
+                    document.getElementById("confirm-password")
+                        .value;
 
-                return;
-            }
 
+                // ==============================
+                // CHECK PASSWORDS
+                // ==============================
 
-            const user =
-                auth.currentUser;
-
-
-            if (!user) {
-
-                message.textContent =
-                    "Please log in again.";
-
-                return;
-            }
-
-
-            try {
-
-                completeButton.disabled = true;
-
-                completeButton.textContent =
-                    "Verifying...";
-
-
-                // Get the participation record
-
-                const completionRef =
-                    doc(
-                        db,
-                        "surveyCompletions",
-                        completionId
-                    );
-
-
-                const completionSnapshot =
-                    await getDoc(completionRef);
-
-
-                if (!completionSnapshot.exists()) {
-
-                    throw new Error(
-                        "Survey completion record not found."
-                    );
-
-                }
-
-
-                const completion =
-                    completionSnapshot.data();
-
-
-                // Prevent awarding points twice
-
-                if (completion.verified === true) {
+                if (password !== confirmPassword) {
 
                     message.textContent =
-                        "This survey has already been completed.";
+                        "Passwords do not match.";
 
                     return;
                 }
 
 
-                // Make sure the completion belongs
-                // to the logged-in member
+                try {
 
-                if (completion.userId !== user.uid) {
+                    registerButton.disabled = true;
 
-                    throw new Error(
-                        "This survey session does not belong to this account."
+                    registerButton.textContent =
+                        "Creating account...";
+
+                    message.textContent =
+                        "Creating your SurveyMars account...";
+
+
+                    // ==============================
+                    // CREATE AUTHENTICATION ACCOUNT
+                    // ==============================
+
+                    const userCredential =
+                        await createUserWithEmailAndPassword(
+                            auth,
+                            email,
+                            password
+                        );
+
+
+                    const user =
+                        userCredential.user;
+
+
+                    console.log(
+                        "AUTHENTICATION ACCOUNT CREATED"
                     );
 
-                }
-
-
-                // Get the survey reward
-
-                const surveyRef =
-                    doc(
-                        db,
-                        "surveys",
-                        completion.surveyId
+                    console.log(
+                        "Email:",
+                        user.email
                     );
 
-
-                const surveySnapshot =
-                    await getDoc(surveyRef);
-
-
-                if (!surveySnapshot.exists()) {
-
-                    throw new Error(
-                        "Survey information not found."
-                    );
-
-                }
-
-
-                const survey =
-                    surveySnapshot.data();
-
-
-                const reward =
-                    Number(survey.points || 0);
-
-
-                // Update completion record
-
-                await updateDoc(
-                    completionRef,
-                    {
-
-                        status: "completed",
-
-                        points: reward,
-
-                        verified: true,
-
-                        completedAt:
-                            serverTimestamp()
-
-                    }
-                );
-
-
-                // Add points to member account
-
-                const userRef =
-                    doc(
-                        db,
-                        "users",
+                    console.log(
+                        "UID:",
                         user.uid
                     );
 
 
-                await updateDoc(
-                    userRef,
-                    {
-                        points: increment(reward)
+                    // ==============================
+                    // SAVE DISPLAY NAME
+                    // ==============================
+
+                    await updateProfile(
+                        user,
+                        {
+                            displayName: fullname
+                        }
+                    );
+
+
+                    // ==============================
+                    // CREATE FIRESTORE USER PROFILE
+                    // ==============================
+
+                    message.textContent =
+                        "Creating your SurveyMars profile...";
+
+
+                    const userRef =
+                        doc(
+                            db,
+                            "users",
+                            user.uid
+                        );
+
+
+                    await setDoc(
+                        userRef,
+                        {
+
+                            fullName: fullname,
+
+                            email: user.email,
+
+                            points: 0,
+
+                            status: "active",
+
+                            createdAt:
+                                serverTimestamp()
+
+                        }
+                    );
+
+
+                    console.log(
+                        "FIRESTORE USER PROFILE CREATED"
+                    );
+
+                    console.log(
+                        "users/" + user.uid
+                    );
+
+
+                    // ==============================
+                    // SUCCESS
+                    // ==============================
+
+                    message.textContent =
+                        "Account created successfully! Welcome to SurveyMars.";
+
+                    registerButton.textContent =
+                        "Account Created";
+
+
+                    registerForm.reset();
+
+
+                    setTimeout(() => {
+
+                        window.location.href =
+                            "dashboard.html";
+
+                    }, 1500);
+
+
+                } catch (error) {
+
+                    console.error(
+                        "SURVEYMARS REGISTRATION ERROR:",
+                        error
+                    );
+
+
+                    // ==============================
+                    // SHOW EXACT FIREBASE ERROR
+                    // ==============================
+
+                    const errorCode =
+                        error.code || "unknown";
+
+                    const errorMessage =
+                        error.message || "No error message available.";
+
+
+                    console.error(
+                        "ERROR CODE:",
+                        errorCode
+                    );
+
+                    console.error(
+                        "ERROR MESSAGE:",
+                        errorMessage
+                    );
+
+
+                    // ==============================
+                    // USER-FRIENDLY MESSAGES
+                    // ==============================
+
+                    if (
+                        errorCode ===
+                        "auth/email-already-in-use"
+                    ) {
+
+                        message.textContent =
+                            "This email is already registered. Please use another email or log in.";
+
+                    } else if (
+                        errorCode ===
+                        "auth/invalid-email"
+                    ) {
+
+                        message.textContent =
+                            "Please enter a valid email address.";
+
+                    } else if (
+                        errorCode ===
+                        "auth/weak-password"
+                    ) {
+
+                        message.textContent =
+                            "Password must contain at least 6 characters.";
+
+                    } else if (
+                        errorCode ===
+                        "permission-denied" ||
+                        errorCode ===
+                        "firestore/permission-denied"
+                    ) {
+
+                        message.textContent =
+                            "Authentication succeeded, but Firestore rejected the user profile. Error: " +
+                            errorCode;
+
+                    } else {
+
+                        message.textContent =
+                            "Registration error: " +
+                            errorCode +
+                            " — " +
+                            errorMessage;
+
                     }
-                );
 
 
-                message.textContent =
-                    "Survey completed successfully! " +
-                    reward +
-                    " points have been added to your SurveyMars balance.";
+                    registerButton.disabled = false;
 
+                    registerButton.textContent =
+                        "Create Account";
 
-                completeButton.textContent =
-                    "Survey Completed";
-
-
-                // Give the user time to see confirmation
-
-                setTimeout(() => {
-
-                    window.location.href =
-                        "dashboard.html";
-
-                }, 2500);
-
-
-            } catch (error) {
-
-                console.error(error);
-
-                completeButton.disabled = false;
-
-                completeButton.textContent =
-                    "Complete Survey";
-
-                message.textContent =
-                    "We could not verify your survey completion. Please try again.";
+                }
 
             }
+        );
 
-        }
-    );
-
-</script>
+    </script>
 
 </body>
+
 </html>
