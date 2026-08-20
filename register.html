@@ -187,13 +187,17 @@
 
             await setDoc(doc(db, "users", user.uid), {
 
-                fullName: fullname,
+    fullName: fullname,
 
-                email: user.email,
+    email: user.email,
 
-                createdAt: serverTimestamp()
+    points: 0,
 
-            });
+    status: "active",
+
+    createdAt: serverTimestamp()
+
+});
 
 
             message.textContent =
