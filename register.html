@@ -201,10 +201,11 @@
 
 
             message.textContent =
-                "Account created successfully! Welcome to SurveyMars.";
+    "Account created successfully! Welcome to SurveyMars.";
 
+registerForm.reset();
 
-            registerForm.reset();
+window.location.href = "dashboard.html";
 
 
         } catch (error) {
