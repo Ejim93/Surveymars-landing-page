@@ -29,7 +29,7 @@
         <h1>Welcome to SurveyMars</h1>
 
         <p id="welcomeMessage">
-            Loading your account...
+            Checking your account...
         </p>
 
 
@@ -148,28 +148,29 @@
 
 <script type="module">
 
-    import { initializeApp }
-        from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
+    import {
+        initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
     import {
         getAuth,
         onAuthStateChanged,
+        setPersistence,
+        browserLocalPersistence,
         signOut
     } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
-
     import {
-    getFirestore,
-    collection,
-    query,
-    where,
-    getDocs,
-    addDoc,
-    serverTimestamp,
-    doc,
-    getDoc
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        getFirestore,
+        collection,
+        query,
+        where,
+        getDocs,
+        addDoc,
+        serverTimestamp,
+        doc,
+        getDoc
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
     // ==============================
@@ -193,13 +194,18 @@
     };
 
 
-    // Initialize Firebase
+    // ==============================
+    // INITIALIZE FIREBASE
+    // ==============================
 
-    const app = initializeApp(firebaseConfig);
+    const app =
+        initializeApp(firebaseConfig);
 
-    const auth = getAuth(app);
+    const auth =
+        getAuth(app);
 
-    const db = getFirestore(app);
+    const db =
+        getFirestore(app);
 
 
     // ==============================
@@ -207,82 +213,134 @@
     // ==============================
 
     const welcomeMessage =
-    document.getElementById("welcomeMessage");
+        document.getElementById("welcomeMessage");
 
-const pointsDisplay =
-    document.getElementById("points");
+    const pointsDisplay =
+        document.getElementById("points");
 
-const surveyList =
-    document.getElementById("surveyList");
+    const surveyList =
+        document.getElementById("surveyList");
 
-const logoutButton =
-    document.getElementById("logoutButton");
+    const logoutButton =
+        document.getElementById("logoutButton");
 
 
     // ==============================
-    // CHECK LOGIN
+    // AUTHENTICATION PERSISTENCE
     // ==============================
 
-    onAuthStateChanged(auth, async (user) => {
-
-        if (!user) {
-
-            window.location.href = "login.html";
-
-            return;
-        }
-
-
-        const name =
-            user.displayName || user.email;
-
-
-        welcomeMessage.textContent =
-    "Hello, " + name +
-    "! Welcome to your SurveyMars dashboard.";
-
-
-// Load user's points
-
-try {
-
-    const userRef =
-        doc(db, "users", user.uid);
-
-    const userSnapshot =
-        await getDoc(userRef);
-
-    if (userSnapshot.exists()) {
-
-        const userData =
-            userSnapshot.data();
-
-        pointsDisplay.textContent =
-            Number(userData.points || 0);
-
-    } else {
-
-        pointsDisplay.textContent = "0";
-
-    }
-
-} catch (error) {
-
-    console.error(
-        "Could not load points:",
-        error
+    await setPersistence(
+        auth,
+        browserLocalPersistence
     );
 
-    pointsDisplay.textContent = "0";
 
-}
+    // ==============================
+    // CHECK LOGIN STATE
+    // ==============================
+
+    onAuthStateChanged(
+        auth,
+        async (user) => {
+
+            if (!user) {
+
+                welcomeMessage.textContent =
+                    "Your login session could not be found.";
+
+                surveyList.innerHTML =
+                    "<p>Please log in again.</p>";
+
+                setTimeout(() => {
+
+                    window.location.href =
+                        "login.html";
+
+                }, 1500);
+
+                return;
+            }
 
 
-// Load published surveys
+            console.log(
+                "AUTHENTICATED USER:",
+                user.uid
+            );
 
-await loadSurveys();
 
-    });
+            const name =
+                user.displayName ||
+                user.email;
+
+
+            welcomeMessage.textContent =
+                "Hello, " +
+                name +
+                "! Welcome to your SurveyMars dashboard.";
+
+
+            // ==============================
+            // LOAD USER POINTS
+            // ==============================
+
+            try {
+
+                const userRef =
+                    doc(
+                        db,
+                        "users",
+                        user.uid
+                    );
+
+
+                const userSnapshot =
+                    await getDoc(userRef);
+
+
+                if (userSnapshot.exists()) {
+
+                    const userData =
+                        userSnapshot.data();
+
+
+                    pointsDisplay.textContent =
+                        Number(
+                            userData.points || 0
+                        );
+
+                } else {
+
+                    console.error(
+                        "User profile not found:",
+                        user.uid
+                    );
+
+                    pointsDisplay.textContent =
+                        "0";
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Could not load points:",
+                    error
+                );
+
+                pointsDisplay.textContent =
+                    "0";
+
+            }
+
+
+            // ==============================
+            // LOAD PUBLISHED SURVEYS
+            // ==============================
+
+            await loadSurveys();
+
+        }
+    );
 
 
     // ==============================
@@ -296,12 +354,18 @@ await loadSurveys();
             const surveysQuery =
                 query(
                     collection(db, "surveys"),
-                    where("status", "==", "published")
+                    where(
+                        "status",
+                        "==",
+                        "published"
+                    )
                 );
 
 
             const snapshot =
-                await getDocs(surveysQuery);
+                await getDocs(
+                    surveysQuery
+                );
 
 
             if (snapshot.empty) {
@@ -313,151 +377,195 @@ await loadSurveys();
             }
 
 
-            surveyList.innerHTML = "";
+            surveyList.innerHTML =
+                "";
 
 
-            snapshot.forEach((docSnapshot) => {
+            snapshot.forEach(
+                (docSnapshot) => {
 
-                const survey =
-                    docSnapshot.data();
-
-
-                const card =
-                    document.createElement("div");
+                    const survey =
+                        docSnapshot.data();
 
 
-                card.className =
-                    "dashboard-card";
+                    const card =
+                        document.createElement("div");
 
 
-                const title =
-                    document.createElement("h3");
-
-                title.textContent =
-                    survey.title || "Survey";
+                    card.className =
+                        "dashboard-card";
 
 
-                const description =
-                    document.createElement("p");
-
-                description.textContent =
-                    survey.description || "";
+                    const title =
+                        document.createElement("h3");
 
 
-                const points =
-                    document.createElement("p");
-
-                points.innerHTML =
-                    "<strong>⭐ Reward:</strong> " +
-                    Number(survey.points || 0) +
-                    " points";
+                    title.textContent =
+                        survey.title ||
+                        "Survey";
 
 
-                const button =
-                    document.createElement("button");
-
-                button.textContent =
-                    "Take Survey";
+                    const description =
+                        document.createElement("p");
 
 
-                // ==============================
-                // TAKE SURVEY
-                // ==============================
-
-                button.addEventListener("click", async () => {
-
-                    const user =
-                        auth.currentUser;
+                    description.textContent =
+                        survey.description ||
+                        "";
 
 
-                    if (!user) {
-
-                        alert(
-                            "Please log in again."
-                        );
-
-                        window.location.href =
-                            "login.html";
-
-                        return;
-                    }
+                    const points =
+                        document.createElement("p");
 
 
-                    try {
-
-                        button.disabled = true;
-
-                        button.textContent =
-                            "Starting survey...";
-
-
-                        // Create participation record
-
-const completionRef = await addDoc(
-    collection(db, "surveyCompletions"),
-    {
-        userId: user.uid,
-        surveyId: docSnapshot.id,
-        status: "started",
-        points: 0,
-        verified: false,
-        startedAt: serverTimestamp()
-    }
-);
+                    points.innerHTML =
+                        "<strong>⭐ Reward:</strong> " +
+                        Number(
+                            survey.points || 0
+                        ) +
+                        " points";
 
 
-// Send the completion ID to the survey page
-
-const separator =
-    survey.surveyLink.includes("?") ? "&" : "?";
-
-window.location.href =
-    survey.surveyLink +
-    separator +
-    "completionId=" +
-    encodeURIComponent(completionRef.id);
+                    const button =
+                        document.createElement("button");
 
 
-
-                    } catch (error) {
-
-                        console.error(error);
+                    button.textContent =
+                        "Take Survey";
 
 
-                        button.disabled =
-                            false;
+                    // ==============================
+                    // TAKE SURVEY
+                    // ==============================
+
+                    button.addEventListener(
+                        "click",
+                        async () => {
+
+                            const user =
+                                auth.currentUser;
 
 
-                        button.textContent =
-                            "Take Survey";
+                            if (!user) {
+
+                                alert(
+                                    "Your login session has expired. Please log in again."
+                                );
+
+                                window.location.href =
+                                    "login.html";
+
+                                return;
+                            }
 
 
-                        alert(
-                            "We could not record your survey participation. Please try again."
-                        );
+                            try {
 
-                    }
-
-                });
+                                button.disabled =
+                                    true;
 
 
-                card.appendChild(title);
-
-                card.appendChild(description);
-
-                card.appendChild(points);
-
-                card.appendChild(button);
+                                button.textContent =
+                                    "Starting survey...";
 
 
-                surveyList.appendChild(card);
+                                // Create participation record
 
-            });
+                                const completionRef =
+                                    await addDoc(
+                                        collection(
+                                            db,
+                                            "surveyCompletions"
+                                        ),
+                                        {
+
+                                            userId:
+                                                user.uid,
+
+                                            surveyId:
+                                                docSnapshot.id,
+
+                                            status:
+                                                "started",
+
+                                            points:
+                                                0,
+
+                                            verified:
+                                                false,
+
+                                            startedAt:
+                                                serverTimestamp()
+
+                                        }
+                                    );
+
+
+                                // Send completion ID to survey page
+
+                                const separator =
+                                    survey.surveyLink.includes("?")
+                                        ? "&"
+                                        : "?";
+
+
+                                window.location.href =
+                                    survey.surveyLink +
+                                    separator +
+                                    "completionId=" +
+                                    encodeURIComponent(
+                                        completionRef.id
+                                    );
+
+                            } catch (error) {
+
+                                console.error(
+                                    "Could not start survey:",
+                                    error
+                                );
+
+
+                                button.disabled =
+                                    false;
+
+
+                                button.textContent =
+                                    "Take Survey";
+
+
+                                alert(
+                                    "We could not record your survey participation. Please try again."
+                                );
+
+                            }
+
+                        }
+                    );
+
+
+                    card.appendChild(title);
+
+                    card.appendChild(
+                        description
+                    );
+
+                    card.appendChild(points);
+
+                    card.appendChild(button);
+
+                    surveyList.appendChild(card);
+
+                }
+            );
 
 
         } catch (error) {
 
-            console.error(error);
+            console.error(
+                "Could not load surveys:",
+                error
+            );
+
 
             surveyList.innerHTML =
                 "<p>Unable to load surveys.</p>";
@@ -484,7 +592,10 @@ window.location.href =
 
             } catch (error) {
 
-                console.error(error);
+                console.error(
+                    "Logout error:",
+                    error
+                );
 
             }
 
