@@ -10,11 +10,6 @@
     <link rel="stylesheet" href="style.css">
 
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-
         .survey-container {
             max-width: 700px;
             margin: 30px auto;
@@ -22,7 +17,7 @@
         }
 
         .survey-card {
-            background: #ffffff;
+            background: #fff;
             padding: 25px;
             border-radius: 12px;
             box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12);
@@ -81,7 +76,6 @@
     </div>
 </header>
 
-
 <main class="survey-container">
 
     <div class="survey-card">
@@ -96,10 +90,7 @@
             <strong>Reward: 10 points</strong>
         </p>
 
-
         <form id="surveyForm">
-
-            <!-- QUESTION 1 -->
 
             <div class="question">
 
@@ -108,45 +99,27 @@
                 </h3>
 
                 <label class="option">
-                    <input
-                        type="radio"
-                        name="question1"
-                        value="Surveys"
-                    >
+                    <input type="radio" name="question1" value="Surveys" required>
                     Surveys
                 </label>
 
                 <label class="option">
-                    <input
-                        type="radio"
-                        name="question1"
-                        value="Mentorship"
-                    >
+                    <input type="radio" name="question1" value="Mentorship">
                     Mentorship
                 </label>
 
                 <label class="option">
-                    <input
-                        type="radio"
-                        name="question1"
-                        value="Learning"
-                    >
+                    <input type="radio" name="question1" value="Learning">
                     Learning opportunities
                 </label>
 
                 <label class="option">
-                    <input
-                        type="radio"
-                        name="question1"
-                        value="Business"
-                    >
+                    <input type="radio" name="question1" value="Business">
                     Business opportunities
                 </label>
 
             </div>
 
-
-            <!-- QUESTION 2 -->
 
             <div class="question">
 
@@ -155,36 +128,22 @@
                 </h3>
 
                 <label class="option">
-                    <input
-                        type="radio"
-                        name="question2"
-                        value="Daily"
-                    >
+                    <input type="radio" name="question2" value="Daily" required>
                     Daily
                 </label>
 
                 <label class="option">
-                    <input
-                        type="radio"
-                        name="question2"
-                        value="Weekly"
-                    >
+                    <input type="radio" name="question2" value="Weekly">
                     Weekly
                 </label>
 
                 <label class="option">
-                    <input
-                        type="radio"
-                        name="question2"
-                        value="Monthly"
-                    >
+                    <input type="radio" name="question2" value="Monthly">
                     Monthly
                 </label>
 
             </div>
 
-
-            <!-- QUESTION 3 -->
 
             <div class="question">
 
@@ -193,39 +152,24 @@
                 </h3>
 
                 <label class="option">
-                    <input
-                        type="radio"
-                        name="question3"
-                        value="Very Interested"
-                    >
+                    <input type="radio" name="question3" value="Very Interested" required>
                     Very interested
                 </label>
 
                 <label class="option">
-                    <input
-                        type="radio"
-                        name="question3"
-                        value="Interested"
-                    >
+                    <input type="radio" name="question3" value="Interested">
                     Interested
                 </label>
 
                 <label class="option">
-                    <input
-                        type="radio"
-                        name="question3"
-                        value="Not Sure"
-                    >
+                    <input type="radio" name="question3" value="Not Sure">
                     Not sure yet
                 </label>
 
             </div>
 
 
-            <button
-                type="submit"
-                id="submitSurvey"
-            >
+            <button type="submit" id="submitSurvey">
                 Submit Survey
             </button>
 
@@ -240,10 +184,6 @@
 
 <script type="module">
 
-    // ==========================================
-    // FIREBASE IMPORTS
-    // ==========================================
-
     import {
         initializeApp
     } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
@@ -255,9 +195,8 @@
 
     import {
         getFirestore,
-        doc,
-        getDoc,
-        setDoc,
+        collection,
+        addDoc,
         updateDoc,
         serverTimestamp
     } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
@@ -296,12 +235,20 @@
 
 
     // ==========================================
-    // SURVEY SETTINGS
+    // SURVEY INFORMATION
     // ==========================================
 
     const SURVEY_ID = "test-survey";
 
     const TEST_REWARD = 10;
+
+
+    // This variable will hold the Firestore
+    // document created when the survey starts.
+
+    let completionRef = null;
+
+    let currentUser = null;
 
 
     // ==========================================
@@ -319,31 +266,12 @@
 
 
     // ==========================================
-    // SHOW MESSAGE
-    // ==========================================
-
-    function showMessage(text) {
-
-        message.textContent = text;
-
-    }
-
-
-    // ==========================================
-    // AUTHENTICATION CHECK
+    // AUTHENTICATION
     // ==========================================
 
     onAuthStateChanged(auth, async (user) => {
 
         if (!user) {
-
-            /*
-             * IMPORTANT:
-             * Do NOT send the user to Join SurveyMars.
-             *
-             * A person who reaches this page without
-             * being logged in should go to login.html.
-             */
 
             window.location.href = "login.html";
 
@@ -351,93 +279,81 @@
         }
 
 
+        currentUser = user;
+
+
         console.log(
-            "Survey user authenticated:",
+            "SURVEYMARS USER:",
             user.uid
         );
 
 
+        console.log(
+            "SURVEYMARS EMAIL:",
+            user.email
+        );
+
+
         // ======================================
-        // CHECK EXISTING COMPLETION
+        // CREATE STARTED SURVEY RECORD
         // ======================================
-
-        const completionId =
-            user.uid + "_" + SURVEY_ID;
-
-        const completionRef =
-            doc(
-                db,
-                "surveyCompletions",
-                completionId
-            );
-
 
         try {
 
-            const existingCompletion =
-                await getDoc(completionRef);
+            message.textContent =
+                "Starting survey...";
 
 
-            if (existingCompletion.exists()) {
-
-                const data =
-                    existingCompletion.data();
-
-
-                if (
-                    data.status === "completed"
-                ) {
-
-                    showMessage(
-                        "You have already completed this test survey."
-                    );
-
-                    submitSurvey.disabled = true;
-
-                    return;
-                }
-
-
-                /*
-                 * If the record exists as "started",
-                 * we allow the user to continue.
-                 */
-
-                showMessage(
-                    "You may continue the survey."
+            const completionsCollection =
+                collection(
+                    db,
+                    "surveyCompletions"
                 );
 
-                return;
-            }
 
+            /*
+             * IMPORTANT:
+             *
+             * We intentionally create the STARTED
+             * record directly.
+             *
+             * We do NOT perform a getDoc() first.
+             */
 
-            // ==================================
-            // CREATE STARTED RECORD
-            // ==================================
+            completionRef =
+                await addDoc(
+                    completionsCollection,
+                    {
 
-            await setDoc(
-                completionRef,
-                {
+                        userId: user.uid,
 
-                    userId: user.uid,
+                        surveyId: SURVEY_ID,
 
-                    surveyId: SURVEY_ID,
+                        status: "started",
 
-                    status: "started",
+                        points: 0,
 
-                    points: 0,
+                        verified: false,
 
-                    verified: false,
+                        startedAt:
+                            serverTimestamp()
 
-                    startedAt: serverTimestamp()
-
-                }
-            );
+                    }
+                );
 
 
             console.log(
-                "Survey started successfully."
+                "SURVEY STARTED"
             );
+
+            console.log(
+                "Completion ID:",
+                completionRef.id
+            );
+
+
+            message.textContent =
+                "Survey ready. Please answer all three questions.";
 
         } catch (error) {
 
@@ -446,9 +362,21 @@
                 error
             );
 
-            showMessage(
-                "Unable to start the survey. Please try again."
+            console.error(
+                "ERROR CODE:",
+                error.code
             );
+
+            console.error(
+                "ERROR MESSAGE:",
+                error.message
+            );
+
+
+            message.textContent =
+                "Unable to start the survey: " +
+                (error.message || "Unknown error");
+
 
             submitSurvey.disabled = true;
 
@@ -468,18 +396,27 @@
             event.preventDefault();
 
 
-            const user =
-                auth.currentUser;
+            // ======================================
+            // CHECK USER
+            // ======================================
+
+            if (!currentUser) {
+
+                message.textContent =
+                    "Please log in first.";
+
+                return;
+            }
 
 
             // ======================================
-            // DOUBLE-CHECK AUTHENTICATION
+            // CHECK SURVEY RECORD
             // ======================================
 
-            if (!user) {
+            if (!completionRef) {
 
-                window.location.href =
-                    "login.html";
+                message.textContent =
+                    "The survey has not started correctly. Please refresh the page and try again.";
 
                 return;
             }
@@ -511,16 +448,15 @@
                 !question3
             ) {
 
-                showMessage(
-                    "Please answer all three questions."
-                );
+                message.textContent =
+                    "Please answer all three questions.";
 
                 return;
             }
 
 
             // ======================================
-            // DISABLE SUBMIT BUTTON
+            // DISABLE BUTTON
             // ======================================
 
             submitSurvey.disabled = true;
@@ -528,70 +464,15 @@
             submitSurvey.textContent =
                 "Submitting...";
 
-            showMessage(
-                "Submitting your survey..."
-            );
 
-
-            // ======================================
-            // COMPLETION DOCUMENT
-            // ======================================
-
-            const completionId =
-                user.uid + "_" + SURVEY_ID;
-
-            const completionRef =
-                doc(
-                    db,
-                    "surveyCompletions",
-                    completionId
-                );
+            message.textContent =
+                "Submitting your survey...";
 
 
             try {
 
                 // ==================================
-                // CHECK THAT STARTED RECORD EXISTS
-                // ==================================
-
-                const completionSnapshot =
-                    await getDoc(completionRef);
-
-
-                if (!completionSnapshot.exists()) {
-
-                    throw new Error(
-                        "Survey participation record was not found."
-                    );
-
-                }
-
-
-                const completionData =
-                    completionSnapshot.data();
-
-
-                // ==================================
-                // PREVENT DUPLICATE COMPLETION
-                // ==================================
-
-                if (
-                    completionData.status ===
-                    "completed"
-                ) {
-
-                    showMessage(
-                        "This survey has already been completed."
-                    );
-
-                    submitSurvey.disabled = true;
-
-                    return;
-                }
-
-
-                // ==================================
-                // COMPLETE SURVEY
+                // COMPLETE THE STARTED RECORD
                 // ==================================
 
                 await updateDoc(
@@ -624,13 +505,18 @@
                 );
 
 
+                console.log(
+                    "SURVEY COMPLETED SUCCESSFULLY"
+                );
+
+
                 // ==================================
-                // SUCCESS
+                // SUCCESS MESSAGE
                 // ==================================
 
-                showMessage(
-                    "Survey completed successfully! You earned 10 points."
-                );
+                message.textContent =
+                    "Survey completed successfully! You earned 10 points.";
+
 
                 submitSurvey.textContent =
                     "Survey Completed";
@@ -655,12 +541,10 @@
                     error
                 );
 
-
                 console.error(
                     "ERROR CODE:",
                     error.code
                 );
-
 
                 console.error(
                     "ERROR MESSAGE:",
@@ -668,10 +552,9 @@
                 );
 
 
-                showMessage(
+                message.textContent =
                     "Survey submission failed: " +
-                    (error.message || "Unknown error")
-                );
+                    (error.message || "Unknown error");
 
 
                 submitSurvey.disabled = false;
