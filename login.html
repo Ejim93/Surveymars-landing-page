@@ -1,172 +1,310 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
 
-    <title>Log in - SurveyMars</title>
+<title>Log in - SurveyMars</title>
 
-    <link rel="stylesheet" href="style.css">
-</head>
+<link rel="stylesheet" href="style.css">
 
-<body>
+</head><body><header><div class="logo">
 
-    <header>
-        <div class="logo">
-            <img src="surveymars-logo.png"
-                 alt="SurveyMars - Mentorship & Opportunities">
-        </div>
-    </header>
+    <img
+        src="surveymars-logo.png"
+        alt="SurveyMars - Mentorship & Opportunities">
 
-    <main>
-        <section class="register-section">
+</div>
 
-            <h1>Welcome Back to SurveyMars</h1>
+</header><main><section class="register-section">
 
-            <p>
-                Log in to access your SurveyMars account.
-            </p>
+    <h1>
+        Welcome Back to SurveyMars
+    </h1>
 
-            <form id="loginForm">
-
-                <label for="email">Email Address</label>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="Enter your email address"
-                    required
-                >
-
-                <label for="password">Password</label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="Enter your password"
-                    required
-                >
-
-                <button type="submit">Log In</button>
-
-                <p id="message"></p>
-
-            </form>
-
-            <p>
-                Don't have a SurveyMars account?
-                <a href="register.html">Create an account</a>
-            </p>
-
-        </section>
-    </main>
+    <p>
+        Log in to access your SurveyMars account.
+    </p>
 
 
-    <!-- Firebase Authentication -->
+    <form id="loginForm">
 
-    <script type="module">
+        <label for="email">
+            Email Address
+        </label>
 
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
-        import {
-            getAuth,
-            signInWithEmailAndPassword
-        } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyDfY0BVSt_NIqUf3rwgPlRRXLJFLq7-7M8",
-            authDomain: "surveymars-11698.firebaseapp.com",
-            projectId: "surveymars-11698",
-            storageBucket: "surveymars-11698.firebasestorage.app",
-            messagingSenderId: "503727549780",
-            appId: "1:503727549780:web:326a85d7b1f7eca730acc1"
-        };
+        <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter your email address"
+            required
+        >
 
 
-        const app = initializeApp(firebaseConfig);
+        <label for="password">
+            Password
+        </label>
 
-        const auth = getAuth(app);
+        <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+        >
 
 
-        const loginForm = document.getElementById("loginForm");
-        const message = document.getElementById("message");
+        <button type="submit">
+            Log In
+        </button>
 
 
-        loginForm.addEventListener("submit", async (event) => {
+        <p id="message"></p>
+
+    </form>
+
+
+    <p>
+
+        Don't have a SurveyMars account?
+
+        <a href="register.html">
+            Create an account
+        </a>
+
+    </p>
+
+</section>
+
+</main><script type="module">
+
+
+    // ==========================================
+    // FIREBASE IMPORTS
+    // ==========================================
+
+    import {
+        initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+
+    import {
+        getAuth,
+        setPersistence,
+        browserLocalPersistence,
+        signInWithEmailAndPassword
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+
+    // ==========================================
+    // FIREBASE CONFIGURATION
+    // ==========================================
+
+    const firebaseConfig = {
+
+        apiKey:
+            "AIzaSyDfY0BVSt_NIqUf3rwgRRXLJFLJq7-7M8",
+
+        authDomain:
+            "surveymars-11698.firebaseapp.com",
+
+        projectId:
+            "surveymars-11698",
+
+        storageBucket:
+            "surveymars-11698.firebasestorage.app",
+
+        messagingSenderId:
+            "503727549780",
+
+        appId:
+            "1:503727549780:web:326a85d7b1f7eca730acc1"
+
+    };
+
+
+    // ==========================================
+    // INITIALIZE FIREBASE
+    // ==========================================
+
+    const app =
+        initializeApp(
+            firebaseConfig
+        );
+
+
+    const auth =
+        getAuth(app);
+
+
+    // ==========================================
+    // PAGE ELEMENTS
+    // ==========================================
+
+    const loginForm =
+        document.getElementById(
+            "loginForm"
+        );
+
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+
+    // ==========================================
+    // FORCE LOCAL LOGIN PERSISTENCE
+    // ==========================================
+
+    await setPersistence(
+        auth,
+        browserLocalPersistence
+    );
+
+
+    // ==========================================
+    // LOGIN
+    // ==========================================
+
+    loginForm.addEventListener(
+        "submit",
+        async (event) => {
 
             event.preventDefault();
 
+
             const email =
-                document.getElementById("email").value.trim();
+                document
+                    .getElementById("email")
+                    .value
+                    .trim();
+
 
             const password =
-                document.getElementById("password").value;
+                document
+                    .getElementById("password")
+                    .value;
+
+
+            message.textContent =
+                "Logging you in...";
 
 
             try {
 
-                message.textContent = "Logging you in...";
 
+                // ==================================
+                // SIGN IN
+                // ==================================
 
                 const userCredential =
-    await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-    );
+                    await signInWithEmailAndPassword(
+                        auth,
+                        email,
+                        password
+                    );
 
-const user = userCredential.user;
 
-message.textContent =
-    "Login successful! Welcome back to SurveyMars.";
+                const user =
+                    userCredential.user;
 
-if (
-    user.uid === "7S1e5aUxynaSDkzDiNNmXYaD1IH3"
-) {
 
-    window.location.href = "admin.html";
+                console.log(
+                    "LOGIN SUCCESS:",
+                    user.uid
+                );
 
-} else {
 
-    window.location.href = "dashboard.html";
+                message.textContent =
+                    "Login successful! Opening your dashboard...";
 
-}
+
+                // ==================================
+                // GIVE FIREBASE A MOMENT TO SAVE
+                // THE LOCAL AUTH SESSION
+                // ==================================
+
+                await new Promise(
+                    (resolve) =>
+                        setTimeout(
+                            resolve,
+                            500
+                        )
+                );
+
+
+                // ==================================
+                // ADMIN ACCOUNT
+                // ==================================
+
+                if (
+                    user.uid ===
+                    "7S1e5aUxynaSDkzDiNNmXYaD1IH3"
+                ) {
+
+                    window.location.replace(
+                        "admin.html"
+                    );
+
+                    return;
+                }
+
+
+                // ==================================
+                // NORMAL USER
+                // ==================================
+
+                window.location.replace(
+                    "dashboard.html"
+                );
 
 
             } catch (error) {
 
-                console.error(error);
+
+                console.error(
+                    "LOGIN ERROR:",
+                    error
+                );
 
 
                 if (
-                    error.code === "auth/invalid-credential" ||
-                    error.code === "auth/wrong-password" ||
-                    error.code === "auth/user-not-found"
+                    error.code ===
+                    "auth/invalid-credential" ||
+
+                    error.code ===
+                    "auth/wrong-password" ||
+
+                    error.code ===
+                    "auth/user-not-found"
                 ) {
 
                     message.textContent =
                         "Incorrect email or password.";
 
-                } else if (error.code === "auth/invalid-email") {
+
+                } else if (
+                    error.code ===
+                    "auth/invalid-email"
+                ) {
 
                     message.textContent =
                         "Please enter a valid email address.";
 
+
                 } else {
 
                     message.textContent =
-                        "Login failed. Please try again.";
+                        "Login failed: " +
+                        error.message;
 
                 }
 
             }
 
-        });
+        }
+    );
 
-    </script>
-
-</body>
-
-</html>
+</script></body></html>
