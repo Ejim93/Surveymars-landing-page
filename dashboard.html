@@ -5,12 +5,6 @@
 <link rel="stylesheet" href="style.css">
 
 <style>
-
-    /* ==========================================
-       SURVEYMARS DASHBOARD 2.0
-       VISUAL LAYER ONLY
-       ========================================== */
-
     * {
         box-sizing: border-box;
     }
@@ -64,12 +58,18 @@
         padding: 0 15px;
     }
 
-    .welcome-section {
+    .welcome-section,
+    .dashboard-card,
+    .feature-card,
+    .advertising-card {
         background: white;
+        border-radius: 14px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
+    }
+
+    .welcome-section {
         padding: 25px;
-        border-radius: 15px;
         margin-bottom: 20px;
-        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.07);
     }
 
     .welcome-section h1 {
@@ -80,8 +80,6 @@
     .welcome-section p {
         margin-bottom: 0;
     }
-
-    /* POINTS */
 
     .points-card {
         background: linear-gradient(135deg, #ff9800, #ffb52e);
@@ -102,8 +100,6 @@
         margin: 10px 0;
     }
 
-    /* QUICK ACTIONS */
-
     .quick-actions {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -123,31 +119,9 @@
         font-weight: bold;
     }
 
-    .quick-action:hover {
-        transform: translateY(-2px);
-    }
-
-    /* SECTION */
-
     .section-title {
         margin: 30px 0 12px;
     }
-
-    /* CARDS */
-
-    .dashboard-card {
-        background: white;
-        padding: 22px;
-        border-radius: 14px;
-        margin-bottom: 18px;
-        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
-    }
-
-    .dashboard-card h2 {
-        margin-top: 0;
-    }
-
-    /* SURVEY LIST */
 
     #surveyList {
         display: grid;
@@ -157,6 +131,16 @@
 
     #surveyList .dashboard-card {
         margin-bottom: 0;
+    }
+
+    .dashboard-card {
+        padding: 22px;
+        margin-bottom: 18px;
+    }
+
+    .dashboard-card h2,
+    .dashboard-card h3 {
+        margin-top: 0;
     }
 
     .survey-button {
@@ -177,8 +161,6 @@
         cursor: not-allowed;
     }
 
-    /* COMING SOON */
-
     .feature-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -186,10 +168,7 @@
     }
 
     .feature-card {
-        background: white;
         padding: 22px;
-        border-radius: 14px;
-        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
     }
 
     .feature-card h2 {
@@ -206,13 +185,9 @@
         font-weight: bold;
     }
 
-    /* ADVERTISEMENT */
-
     .advertising-card {
-        background: white;
         border: 2px dashed #ddd;
         padding: 25px;
-        border-radius: 14px;
         text-align: center;
         margin-top: 18px;
     }
@@ -220,8 +195,6 @@
     .advertising-card h2 {
         margin-top: 0;
     }
-
-    /* PROFILE / LOGOUT */
 
     .account-actions {
         margin-top: 30px;
@@ -251,8 +224,6 @@
         color: #222;
     }
 
-    /* MOBILE NAVIGATION */
-
     .bottom-navigation {
         position: fixed;
         bottom: 0;
@@ -280,8 +251,6 @@
         margin-bottom: 2px;
     }
 
-    /* MOBILE */
-
     @media (max-width: 700px) {
 
         .quick-actions {
@@ -305,14 +274,10 @@
             padding: 8px;
             font-size: 12px;
         }
-
     }
-
 </style>
 
-</head><body><!-- ==========================================
-     HEADER
-     ========================================== --><header><div class="top-header">
+</head><body><header><div class="top-header">
 
     <div class="logo">
 
@@ -340,9 +305,7 @@
 
 </div>
 
-</header><!-- ==========================================
-     MAIN DASHBOARD
-     ========================================== --><main class="dashboard-wrapper"><!-- WELCOME -->
+</header><main class="dashboard-wrapper"><!-- WELCOME -->
 
 <section class="welcome-section">
 
@@ -418,7 +381,7 @@
 
     <div id="surveyList">
 
-        Loading available surveys...
+        Checking your surveys...
 
     </div>
 
@@ -431,11 +394,8 @@
     🌍 Explore SurveyMars
 </h2>
 
-
 <section class="feature-grid">
 
-
-    <!-- OPPORTUNITIES -->
 
     <div
         class="feature-card"
@@ -457,8 +417,6 @@
     </div>
 
 
-    <!-- LEARNING -->
-
     <div
         class="feature-card"
         id="learning">
@@ -479,8 +437,6 @@
     </div>
 
 
-    <!-- MENTORSHIP -->
-
     <div
         class="feature-card"
         id="mentorship">
@@ -500,8 +456,6 @@
 
     </div>
 
-
-    <!-- SERVICES -->
 
     <div
         class="feature-card"
@@ -606,9 +560,7 @@
 
 </section>
 
-</main><!-- ==========================================
-     MOBILE BOTTOM NAVIGATION
-     ========================================== --><nav class="bottom-navigation"><a href="#">
+</main><!-- MOBILE NAVIGATION --><nav class="bottom-navigation"><a href="#">
     <span>🏠</span>
     Home
 </a>
@@ -633,10 +585,7 @@
     Profile
 </a>
 
-</nav><!-- ==========================================
-     FIREBASE
-     ========================================== --><script type="module">
-
+</nav><script type="module">
 
     // ==========================================
     // FIREBASE IMPORTS
@@ -649,8 +598,6 @@
     import {
         getAuth,
         onAuthStateChanged,
-        setPersistence,
-        browserLocalPersistence,
         signOut
     } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
@@ -671,7 +618,8 @@
 
     const firebaseConfig = {
 
-        apiKey: "AIzaSyDfY0BVSt_NIqUf3rwgRRXLJFLq7-7M8",
+        apiKey:
+            "AIzaSyDfY0BVSt_NIqUf3rwgPlRRXLJFLq7-7M8",
 
         authDomain:
             "surveymars-11698.firebaseapp.com",
@@ -731,44 +679,56 @@
 
 
     // ==========================================
-    // AUTHENTICATION PERSISTENCE
-    // ==========================================
-
-    await setPersistence(
-        auth,
-        browserLocalPersistence
-    );
-
-
-    // ==========================================
-    // CHECK LOGIN STATE
+    // AUTHENTICATION
     // ==========================================
 
     onAuthStateChanged(
         auth,
         async (user) => {
 
+            console.log(
+                "SurveyMars authentication state:",
+                user ? user.uid : "NO USER"
+            );
+
+
             if (!user) {
 
                 welcomeMessage.textContent =
-                    "Your login session could not be found.";
+                    "Checking your login session...";
 
                 surveyList.innerHTML =
-                    "<p>Please log in again.</p>";
+                    "<p>Please wait while your login session is restored.</p>";
+
+
+                /*
+                 * Give Firebase a short opportunity to
+                 * restore the existing authenticated session.
+                 *
+                 * We do NOT immediately redirect.
+                 */
 
                 setTimeout(
                     () => {
 
-                        window.location.href =
-                            "login.html";
+                        if (!auth.currentUser) {
+
+                            window.location.href =
+                                "login.html";
+
+                        }
 
                     },
-                    1500
+                    2500
                 );
 
                 return;
             }
 
+
+            // ======================================
+            // USER IS AUTHENTICATED
+            // ======================================
 
             console.log(
                 "AUTHENTICATED USER:",
@@ -778,7 +738,8 @@
 
             const name =
                 user.displayName ||
-                user.email;
+                user.email ||
+                "SurveyMars Member";
 
 
             welcomeMessage.textContent =
@@ -822,8 +783,8 @@
 
                 } else {
 
-                    console.error(
-                        "User profile not found:",
+                    console.warn(
+                        "SurveyMars user profile not found:",
                         user.uid
                     );
 
@@ -971,7 +932,7 @@
 
                     button.addEventListener(
                         "click",
-                        () => {
+                        async () => {
 
                             const user =
                                 auth.currentUser;
@@ -980,7 +941,7 @@
                             if (!user) {
 
                                 alert(
-                                    "Your login session has expired. Please log in again."
+                                    "Your login session is not available. Please log in again."
                                 );
 
                                 window.location.href =
@@ -989,16 +950,6 @@
                                 return;
                             }
 
-
-                            /*
-                             * IMPORTANT:
-                             *
-                             * The dashboard does NOT create
-                             * a surveyCompletions document.
-                             *
-                             * The survey page creates the
-                             * participation record.
-                             */
 
                             const surveyLink =
                                 survey.surveyLink;
@@ -1011,8 +962,9 @@
                             ) {
 
                                 console.error(
-                                    "Survey has no valid surveyLink:",
-                                    docSnapshot.id
+                                    "Invalid surveyLink:",
+                                    docSnapshot.id,
+                                    surveyLink
                                 );
 
                                 alert(
@@ -1032,8 +984,11 @@
 
 
                             /*
-                             * Keep the existing working
-                             * survey-opening behavior unchanged.
+                             * The dashboard does NOT create
+                             * surveyCompletions.
+                             *
+                             * test-survey.html creates the
+                             * STARTED record.
                              */
 
                             window.location.href =
@@ -1097,8 +1052,10 @@
                     auth
                 );
 
+
                 window.location.href =
                     "login.html";
+
 
             } catch (error) {
 
@@ -1111,6 +1068,5 @@
 
         }
     );
-
 
 </script></body></html>
