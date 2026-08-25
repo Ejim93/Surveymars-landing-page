@@ -1,0 +1,1116 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>SurveyMars Dashboard</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+    /* ==========================================
+       SURVEYMARS DASHBOARD 2.0
+       VISUAL LAYER ONLY
+       ========================================== */
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        background: #f5f7fb;
+        color: #222;
+    }
+
+    header {
+        background: white;
+        border-bottom: 1px solid #e5e5e5;
+        padding: 12px 20px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .top-header {
+        max-width: 1100px;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+    .logo img {
+        max-width: 170px;
+        height: auto;
+    }
+
+    .header-icons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .header-icon {
+        text-decoration: none;
+        background: #f4f4f4;
+        padding: 9px 12px;
+        border-radius: 8px;
+        color: #222;
+        font-size: 14px;
+    }
+
+    .dashboard-wrapper {
+        max-width: 1100px;
+        margin: 25px auto 100px;
+        padding: 0 15px;
+    }
+
+    .welcome-section {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.07);
+    }
+
+    .welcome-section h1 {
+        margin-top: 0;
+        margin-bottom: 8px;
+    }
+
+    .welcome-section p {
+        margin-bottom: 0;
+    }
+
+    /* POINTS */
+
+    .points-card {
+        background: linear-gradient(135deg, #ff9800, #ffb52e);
+        color: white;
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.12);
+    }
+
+    .points-card h2 {
+        margin-top: 0;
+    }
+
+    #points {
+        font-size: 38px;
+        font-weight: bold;
+        margin: 10px 0;
+    }
+
+    /* QUICK ACTIONS */
+
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .quick-action {
+        display: block;
+        text-decoration: none;
+        background: white;
+        color: #222;
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
+        font-weight: bold;
+    }
+
+    .quick-action:hover {
+        transform: translateY(-2px);
+    }
+
+    /* SECTION */
+
+    .section-title {
+        margin: 30px 0 12px;
+    }
+
+    /* CARDS */
+
+    .dashboard-card {
+        background: white;
+        padding: 22px;
+        border-radius: 14px;
+        margin-bottom: 18px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
+    }
+
+    .dashboard-card h2 {
+        margin-top: 0;
+    }
+
+    /* SURVEY LIST */
+
+    #surveyList {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    #surveyList .dashboard-card {
+        margin-bottom: 0;
+    }
+
+    .survey-button {
+        width: 100%;
+        padding: 13px;
+        border: none;
+        border-radius: 8px;
+        background: orange;
+        color: white;
+        font-weight: bold;
+        font-size: 15px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .survey-button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    /* COMING SOON */
+
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
+
+    .feature-card {
+        background: white;
+        padding: 22px;
+        border-radius: 14px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
+    }
+
+    .feature-card h2 {
+        margin-top: 0;
+    }
+
+    .coming-soon {
+        display: inline-block;
+        margin-top: 8px;
+        padding: 6px 10px;
+        background: #f0f0f0;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    /* ADVERTISEMENT */
+
+    .advertising-card {
+        background: white;
+        border: 2px dashed #ddd;
+        padding: 25px;
+        border-radius: 14px;
+        text-align: center;
+        margin-top: 18px;
+    }
+
+    .advertising-card h2 {
+        margin-top: 0;
+    }
+
+    /* PROFILE / LOGOUT */
+
+    .account-actions {
+        margin-top: 30px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .profile-button,
+    #logoutButton {
+        display: inline-block;
+        padding: 13px 18px;
+        border-radius: 8px;
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .profile-button {
+        background: #222;
+        color: white;
+    }
+
+    #logoutButton {
+        border: none;
+        background: #ddd;
+        color: #222;
+    }
+
+    /* MOBILE NAVIGATION */
+
+    .bottom-navigation {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        border-top: 1px solid #ddd;
+        display: flex;
+        justify-content: space-around;
+        padding: 9px 5px;
+        z-index: 200;
+    }
+
+    .bottom-navigation a {
+        text-decoration: none;
+        color: #333;
+        text-align: center;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .bottom-navigation span {
+        display: block;
+        font-size: 20px;
+        margin-bottom: 2px;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 700px) {
+
+        .quick-actions {
+            grid-template-columns: 1fr;
+        }
+
+        #surveyList {
+            grid-template-columns: 1fr;
+        }
+
+        .feature-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .welcome-section,
+        .points-card {
+            padding: 20px;
+        }
+
+        .header-icon {
+            padding: 8px;
+            font-size: 12px;
+        }
+
+    }
+
+</style>
+
+</head><body><!-- ==========================================
+     HEADER
+     ========================================== --><header><div class="top-header">
+
+    <div class="logo">
+
+        <img
+            src="surveymars-logo.png"
+            alt="SurveyMars - Mentorship & Opportunities">
+
+    </div>
+
+    <div class="header-icons">
+
+        <a
+            href="#notifications"
+            class="header-icon">
+            🔔
+        </a>
+
+        <a
+            href="profile.html"
+            class="header-icon">
+            👤
+        </a>
+
+    </div>
+
+</div>
+
+</header><!-- ==========================================
+     MAIN DASHBOARD
+     ========================================== --><main class="dashboard-wrapper"><!-- WELCOME -->
+
+<section class="welcome-section">
+
+    <h1>
+        Welcome to SurveyMars
+    </h1>
+
+    <p id="welcomeMessage">
+        Checking your account...
+    </p>
+
+</section>
+
+
+<!-- POINTS -->
+
+<section class="points-card">
+
+    <h2>
+        ⭐ Your Points
+    </h2>
+
+    <p id="points">
+        0
+    </p>
+
+    <p>
+        Your current SurveyMars points balance.
+    </p>
+
+</section>
+
+
+<!-- QUICK ACTIONS -->
+
+<h2 class="section-title">
+    What would you like to do?
+</h2>
+
+<section class="quick-actions">
+
+    <a
+        href="#surveys"
+        class="quick-action">
+        📋<br>
+        Find Surveys
+    </a>
+
+    <a
+        href="#opportunities"
+        class="quick-action">
+        🚀<br>
+        Explore Opportunities
+    </a>
+
+    <a
+        href="#learning"
+        class="quick-action">
+        🎓<br>
+        Grow Your Skills
+    </a>
+
+</section>
+
+
+<!-- SURVEYS -->
+
+<section id="surveys">
+
+    <h2 class="section-title">
+        📋 Available Surveys
+    </h2>
+
+    <div id="surveyList">
+
+        Loading available surveys...
+
+    </div>
+
+</section>
+
+
+<!-- PLATFORM FEATURES -->
+
+<h2 class="section-title">
+    🌍 Explore SurveyMars
+</h2>
+
+
+<section class="feature-grid">
+
+
+    <!-- OPPORTUNITIES -->
+
+    <div
+        class="feature-card"
+        id="opportunities">
+
+        <h2>
+            🚀 Opportunities
+        </h2>
+
+        <p>
+            Discover verified opportunities that may
+            support your career, skills or business goals.
+        </p>
+
+        <span class="coming-soon">
+            Coming Soon
+        </span>
+
+    </div>
+
+
+    <!-- LEARNING -->
+
+    <div
+        class="feature-card"
+        id="learning">
+
+        <h2>
+            📚 Learning
+        </h2>
+
+        <p>
+            Discover useful learning resources,
+            practical skills and educational opportunities.
+        </p>
+
+        <span class="coming-soon">
+            Coming Soon
+        </span>
+
+    </div>
+
+
+    <!-- MENTORSHIP -->
+
+    <div
+        class="feature-card"
+        id="mentorship">
+
+        <h2>
+            🤝 Mentorship
+        </h2>
+
+        <p>
+            Connect with mentorship opportunities and
+            guidance designed to help you grow.
+        </p>
+
+        <span class="coming-soon">
+            Coming Soon
+        </span>
+
+    </div>
+
+
+    <!-- SERVICES -->
+
+    <div
+        class="feature-card"
+        id="services">
+
+        <h2>
+            🛠 Services
+        </h2>
+
+        <p>
+            Skilled individuals will eventually be able
+            to showcase their services and connect with
+            people who need their skills.
+        </p>
+
+        <span class="coming-soon">
+            Coming Soon
+        </span>
+
+    </div>
+
+</section>
+
+
+<!-- ADVERTISING -->
+
+<section
+    class="advertising-card"
+    id="advertising">
+
+    <h2>
+        📢 Sponsored Opportunities
+    </h2>
+
+    <p>
+        Businesses will be able to share useful
+        products, services, opportunities, images
+        and videos with the SurveyMars community.
+    </p>
+
+    <span class="coming-soon">
+        Advertising Hub Coming Soon
+    </span>
+
+</section>
+
+
+<!-- REWARDS -->
+
+<section
+    class="dashboard-card"
+    id="rewards">
+
+    <h2>
+        🎁 Rewards
+    </h2>
+
+    <p>
+        Your eligible rewards and redemption options
+        will appear here as the SurveyMars rewards
+        system develops.
+    </p>
+
+    <span class="coming-soon">
+        Coming Soon
+    </span>
+
+</section>
+
+
+<!-- NOTIFICATIONS -->
+
+<section
+    class="dashboard-card"
+    id="notifications">
+
+    <h2>
+        🔔 Notifications
+    </h2>
+
+    <p>
+        You currently have no new notifications.
+    </p>
+
+</section>
+
+
+<!-- ACCOUNT -->
+
+<section class="account-actions">
+
+    <a
+        href="profile.html"
+        class="profile-button">
+        👤 My Profile
+    </a>
+
+    <button
+        id="logoutButton">
+        Log Out
+    </button>
+
+</section>
+
+</main><!-- ==========================================
+     MOBILE BOTTOM NAVIGATION
+     ========================================== --><nav class="bottom-navigation"><a href="#">
+    <span>🏠</span>
+    Home
+</a>
+
+<a href="#opportunities">
+    <span>🔎</span>
+    Explore
+</a>
+
+<a href="#rewards">
+    <span>⭐</span>
+    Rewards
+</a>
+
+<a href="#notifications">
+    <span>🔔</span>
+    Alerts
+</a>
+
+<a href="profile.html">
+    <span>👤</span>
+    Profile
+</a>
+
+</nav><!-- ==========================================
+     FIREBASE
+     ========================================== --><script type="module">
+
+
+    // ==========================================
+    // FIREBASE IMPORTS
+    // ==========================================
+
+    import {
+        initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+    import {
+        getAuth,
+        onAuthStateChanged,
+        setPersistence,
+        browserLocalPersistence,
+        signOut
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+    import {
+        getFirestore,
+        collection,
+        query,
+        where,
+        getDocs,
+        doc,
+        getDoc
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+    // ==========================================
+    // FIREBASE CONFIGURATION
+    // ==========================================
+
+    const firebaseConfig = {
+
+        apiKey: "AIzaSyDfY0BVSt_NIqUf3rwgRRXLJFLq7-7M8",
+
+        authDomain:
+            "surveymars-11698.firebaseapp.com",
+
+        projectId:
+            "surveymars-11698",
+
+        storageBucket:
+            "surveymars-11698.firebasestorage.app",
+
+        messagingSenderId:
+            "503727549780",
+
+        appId:
+            "1:503727549780:web:326a85d7b1f7eca730acc1"
+
+    };
+
+
+    // ==========================================
+    // INITIALIZE FIREBASE
+    // ==========================================
+
+    const app =
+        initializeApp(firebaseConfig);
+
+    const auth =
+        getAuth(app);
+
+    const db =
+        getFirestore(app);
+
+
+    // ==========================================
+    // PAGE ELEMENTS
+    // ==========================================
+
+    const welcomeMessage =
+        document.getElementById(
+            "welcomeMessage"
+        );
+
+    const pointsDisplay =
+        document.getElementById(
+            "points"
+        );
+
+    const surveyList =
+        document.getElementById(
+            "surveyList"
+        );
+
+    const logoutButton =
+        document.getElementById(
+            "logoutButton"
+        );
+
+
+    // ==========================================
+    // AUTHENTICATION PERSISTENCE
+    // ==========================================
+
+    await setPersistence(
+        auth,
+        browserLocalPersistence
+    );
+
+
+    // ==========================================
+    // CHECK LOGIN STATE
+    // ==========================================
+
+    onAuthStateChanged(
+        auth,
+        async (user) => {
+
+            if (!user) {
+
+                welcomeMessage.textContent =
+                    "Your login session could not be found.";
+
+                surveyList.innerHTML =
+                    "<p>Please log in again.</p>";
+
+                setTimeout(
+                    () => {
+
+                        window.location.href =
+                            "login.html";
+
+                    },
+                    1500
+                );
+
+                return;
+            }
+
+
+            console.log(
+                "AUTHENTICATED USER:",
+                user.uid
+            );
+
+
+            const name =
+                user.displayName ||
+                user.email;
+
+
+            welcomeMessage.textContent =
+                "Hello, " +
+                name +
+                "! Welcome to your SurveyMars dashboard.";
+
+
+            // ======================================
+            // LOAD USER POINTS
+            // ======================================
+
+            try {
+
+                const userRef =
+                    doc(
+                        db,
+                        "users",
+                        user.uid
+                    );
+
+
+                const userSnapshot =
+                    await getDoc(
+                        userRef
+                    );
+
+
+                if (
+                    userSnapshot.exists()
+                ) {
+
+                    const userData =
+                        userSnapshot.data();
+
+
+                    pointsDisplay.textContent =
+                        Number(
+                            userData.points || 0
+                        );
+
+                } else {
+
+                    console.error(
+                        "User profile not found:",
+                        user.uid
+                    );
+
+                    pointsDisplay.textContent =
+                        "0";
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Could not load points:",
+                    error
+                );
+
+                pointsDisplay.textContent =
+                    "0";
+
+            }
+
+
+            // ======================================
+            // LOAD PUBLISHED SURVEYS
+            // ======================================
+
+            await loadSurveys();
+
+        }
+    );
+
+
+    // ==========================================
+    // LOAD PUBLISHED SURVEYS
+    // ==========================================
+
+    async function loadSurveys() {
+
+        try {
+
+            const surveysQuery =
+                query(
+                    collection(
+                        db,
+                        "surveys"
+                    ),
+                    where(
+                        "status",
+                        "==",
+                        "published"
+                    )
+                );
+
+
+            const snapshot =
+                await getDocs(
+                    surveysQuery
+                );
+
+
+            if (
+                snapshot.empty
+            ) {
+
+                surveyList.innerHTML =
+                    "<p>No surveys are currently available.</p>";
+
+                return;
+            }
+
+
+            surveyList.innerHTML =
+                "";
+
+
+            snapshot.forEach(
+                (docSnapshot) => {
+
+                    const survey =
+                        docSnapshot.data();
+
+
+                    const card =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    card.className =
+                        "dashboard-card";
+
+
+                    const title =
+                        document.createElement(
+                            "h3"
+                        );
+
+
+                    title.textContent =
+                        survey.title ||
+                        "Survey";
+
+
+                    const description =
+                        document.createElement(
+                            "p"
+                        );
+
+
+                    description.textContent =
+                        survey.description ||
+                        "";
+
+
+                    const points =
+                        document.createElement(
+                            "p"
+                        );
+
+
+                    points.innerHTML =
+                        "<strong>⭐ Reward:</strong> " +
+                        Number(
+                            survey.points || 0
+                        ) +
+                        " points";
+
+
+                    const button =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    button.className =
+                        "survey-button";
+
+
+                    button.textContent =
+                        "Take Survey";
+
+
+                    // ==================================
+                    // TAKE SURVEY
+                    // ==================================
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+
+                            const user =
+                                auth.currentUser;
+
+
+                            if (!user) {
+
+                                alert(
+                                    "Your login session has expired. Please log in again."
+                                );
+
+                                window.location.href =
+                                    "login.html";
+
+                                return;
+                            }
+
+
+                            /*
+                             * IMPORTANT:
+                             *
+                             * The dashboard does NOT create
+                             * a surveyCompletions document.
+                             *
+                             * The survey page creates the
+                             * participation record.
+                             */
+
+                            const surveyLink =
+                                survey.surveyLink;
+
+
+                            if (
+                                !surveyLink ||
+                                typeof surveyLink !==
+                                "string"
+                            ) {
+
+                                console.error(
+                                    "Survey has no valid surveyLink:",
+                                    docSnapshot.id
+                                );
+
+                                alert(
+                                    "This survey is not configured correctly yet."
+                                );
+
+                                return;
+                            }
+
+
+                            button.disabled =
+                                true;
+
+
+                            button.textContent =
+                                "Opening survey...";
+
+
+                            /*
+                             * Keep the existing working
+                             * survey-opening behavior unchanged.
+                             */
+
+                            window.location.href =
+                                surveyLink;
+
+                        }
+                    );
+
+
+                    card.appendChild(
+                        title
+                    );
+
+                    card.appendChild(
+                        description
+                    );
+
+                    card.appendChild(
+                        points
+                    );
+
+                    card.appendChild(
+                        button
+                    );
+
+                    surveyList.appendChild(
+                        card
+                    );
+
+                }
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Could not load surveys:",
+                error
+            );
+
+
+            surveyList.innerHTML =
+                "<p>Unable to load surveys.</p>";
+
+        }
+
+    }
+
+
+    // ==========================================
+    // LOG OUT
+    // ==========================================
+
+    logoutButton.addEventListener(
+        "click",
+        async () => {
+
+            try {
+
+                await signOut(
+                    auth
+                );
+
+                window.location.href =
+                    "login.html";
+
+            } catch (error) {
+
+                console.error(
+                    "Logout error:",
+                    error
+                );
+
+            }
+
+        }
+    );
+
+
+</script></body></html>
