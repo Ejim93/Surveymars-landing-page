@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+papa<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
 
 <meta
     name="viewport"
@@ -79,94 +79,37 @@
 
 </main><script type="module">
 
-
-    // ==========================================
-    // FIREBASE IMPORTS
-    // ==========================================
-
     import {
         initializeApp
     } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
-
     import {
         getAuth,
-        setPersistence,
-        browserLocalPersistence,
         signInWithEmailAndPassword
     } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 
-    // ==========================================
-    // FIREBASE CONFIGURATION
-    // ==========================================
-
     const firebaseConfig = {
-
-        apiKey:
-    "AIzaSyDfY0BVSt_NIqUf3rwgRRXLJFLq7-7M8",
-
-        authDomain:
-            "surveymars-11698.firebaseapp.com",
-
-        projectId:
-            "surveymars-11698",
-
-        storageBucket:
-            "surveymars-11698.firebasestorage.app",
-
-        messagingSenderId:
-            "503727549780",
-
-        appId:
-            "1:503727549780:web:326a85d7b1f7eca730acc1"
-
+        apiKey: "AIzaSyDfY0BVSt_NIqUf3rwgRRXLJFLq7-7M8",
+        authDomain: "surveymars-11698.firebaseapp.com",
+        projectId: "surveymars-11698",
+        storageBucket: "surveymars-11698.firebasestorage.app",
+        messagingSenderId: "503727549780",
+        appId: "1:503727549780:web:326a85d7b1f7eca730acc1"
     };
 
 
-    // ==========================================
-    // INITIALIZE FIREBASE
-    // ==========================================
+    const app = initializeApp(firebaseConfig);
 
-    const app =
-        initializeApp(
-            firebaseConfig
-        );
+    const auth = getAuth(app);
 
-
-    const auth =
-        getAuth(app);
-
-
-    // ==========================================
-    // PAGE ELEMENTS
-    // ==========================================
 
     const loginForm =
-        document.getElementById(
-            "loginForm"
-        );
-
+        document.getElementById("loginForm");
 
     const message =
-        document.getElementById(
-            "message"
-        );
+        document.getElementById("message");
 
-
-    // ==========================================
-    // FORCE LOCAL LOGIN PERSISTENCE
-    // ==========================================
-
-    await setPersistence(
-        auth,
-        browserLocalPersistence
-    );
-
-
-    // ==========================================
-    // LOGIN
-    // ==========================================
 
     loginForm.addEventListener(
         "submit",
@@ -174,13 +117,11 @@
 
             event.preventDefault();
 
-
             const email =
                 document
                     .getElementById("email")
                     .value
                     .trim();
-
 
             const password =
                 document
@@ -188,16 +129,11 @@
                     .value;
 
 
-            message.textContent =
-                "Logging you in...";
-
-
             try {
 
+                message.textContent =
+                    "Logging you in...";
 
-                // ==================================
-                // SIGN IN
-                // ==================================
 
                 const userCredential =
                     await signInWithEmailAndPassword(
@@ -218,51 +154,25 @@
 
 
                 message.textContent =
-                    "Login successful! Opening your dashboard...";
+                    "Login successful! Opening dashboard...";
 
-
-                // ==================================
-                // GIVE FIREBASE A MOMENT TO SAVE
-                // THE LOCAL AUTH SESSION
-                // ==================================
-
-                await new Promise(
-                    (resolve) =>
-                        setTimeout(
-                            resolve,
-                            500
-                        )
-                );
-
-
-                // ==================================
-                // ADMIN ACCOUNT
-                // ==================================
 
                 if (
                     user.uid ===
                     "7S1e5aUxynaSDkzDiNNmXYaD1IH3"
                 ) {
 
-                    window.location.replace(
-                        "admin.html"
-                    );
+                    window.location.href =
+                        "admin.html";
 
-                    return;
+                } else {
+
+                    window.location.href =
+                        "dashboard.html";
+
                 }
 
-
-                // ==================================
-                // NORMAL USER
-                // ==================================
-
-                window.location.replace(
-                    "dashboard.html"
-                );
-
-
             } catch (error) {
-
 
                 console.error(
                     "LOGIN ERROR:",
@@ -284,7 +194,6 @@
                     message.textContent =
                         "Incorrect email or password.";
 
-
                 } else if (
                     error.code ===
                     "auth/invalid-email"
@@ -292,7 +201,6 @@
 
                     message.textContent =
                         "Please enter a valid email address.";
-
 
                 } else {
 
@@ -307,4 +215,5 @@
         }
     );
 
-</script></body></html>
+</script>
+                    
