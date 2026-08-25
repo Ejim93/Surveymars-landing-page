@@ -92,6 +92,7 @@
 </header>
 
 
+
 <main class="survey-container">
 
 
@@ -111,6 +112,7 @@
                 Reward: 10 points
             </strong>
         </p>
+
 
 
         <form id="surveyForm">
@@ -285,8 +287,6 @@
 
 
 
-            <!-- SUBMIT BUTTON -->
-
             <button
                 type="submit"
                 id="submitSurvey"
@@ -317,15 +317,13 @@
 
     import {
         initializeApp
-    }
-    from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
 
     import {
         getAuth,
         onAuthStateChanged
-    }
-    from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 
     import {
@@ -336,8 +334,7 @@
         doc,
         getDoc,
         serverTimestamp
-    }
-    from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
 
@@ -387,17 +384,8 @@
 
 
     // ==========================================
-    // ACTUAL FIRESTORE SURVEY ID
+    // ACTUAL FIRESTORE SURVEY DOCUMENT
     // ==========================================
-
-    /*
-     * This is the actual Firestore document ID
-     * for:
-     *
-     * SurveyMars Test 2
-     *
-     * surveys/t2jMm12vo6rAmLQxNOsM
-     */
 
     const SURVEY_ID =
         "t2jMm12vo6rAmLQxNOsM";
@@ -411,8 +399,6 @@
     let completionRef = null;
 
     let currentUser = null;
-
-    let surveyReward = 0;
 
 
 
@@ -443,13 +429,16 @@
 
 
             // ======================================
-            // USER NOT LOGGED IN
+            // NOT LOGGED IN
             // ======================================
 
             if (!user) {
 
-                window.location.href =
-                    "login.html";
+                message.textContent =
+                    "You must be logged in to take this survey.";
+
+                submitSurvey.disabled =
+                    true;
 
                 return;
 
@@ -457,7 +446,7 @@
 
 
             // ======================================
-            // SAVE CURRENT USER
+            // SAVE USER
             // ======================================
 
             currentUser =
@@ -478,15 +467,14 @@
 
 
             // ======================================
-            // LOAD SURVEY FROM FIRESTORE
+            // STEP 1 — READ SURVEY
             // ======================================
 
+            message.textContent =
+                "Checking survey...";
+
+
             try {
-
-
-                message.textContent =
-                    "Loading survey...";
-
 
 
                 const surveyRef =
@@ -497,53 +485,40 @@
                     );
 
 
-
                 const surveySnapshot =
                     await getDoc(
                         surveyRef
                     );
 
 
-
-                // ==================================
-                // CHECK SURVEY EXISTS
-                // ==================================
-
                 if (
                     !surveySnapshot.exists()
                 ) {
 
                     message.textContent =
-                        "This survey could not be found.";
+                        "ERROR: Survey document was not found.";
 
                     submitSurvey.disabled =
                         true;
+
+                    console.error(
+                        "SURVEY READ FAILED: DOCUMENT DOES NOT EXIST"
+                    );
 
                     return;
 
                 }
 
 
-
-                // ==================================
-                // GET SURVEY DATA
-                // ==================================
-
                 const surveyData =
                     surveySnapshot.data();
 
 
-
                 console.log(
-                    "SURVEY DATA:",
+                    "SURVEY DOCUMENT:",
                     surveyData
                 );
 
-
-
-                // ==================================
-                // CHECK PUBLISHED STATUS
-                // ==================================
 
                 if (
                     surveyData.status !==
@@ -551,7 +526,7 @@
                 ) {
 
                     message.textContent =
-                        "This survey is not currently available.";
+                        "ERROR: This survey is not published.";
 
                     submitSurvey.disabled =
                         true;
@@ -559,53 +534,62 @@
                     return;
 
                 }
-
-
-
-                // ==================================
-                // CHECK REWARD
-                // ==================================
-
-                if (
-                    typeof surveyData.points !==
-                    "number"
-                ) {
-
-                    message.textContent =
-                        "This survey has an invalid reward configuration.";
-
-                    submitSurvey.disabled =
-                        true;
-
-                    return;
-
-                }
-
-
-
-                // ==================================
-                // STORE FIRESTORE REWARD
-                // ==================================
-
-                surveyReward =
-                    surveyData.points;
-
 
 
                 console.log(
-                    "SURVEY REWARD:",
-                    surveyReward
+                    "SURVEY READ SUCCESSFUL"
                 );
 
 
+            }
 
-                // ==================================
-                // CREATE STARTED RECORD
-                // ==================================
+            catch (error) {
+
+
+                console.error(
+                    "SURVEY READ FAILED"
+                );
+
+
+                console.error(
+                    "ERROR CODE:",
+                    error.code
+                );
+
+
+                console.error(
+                    "ERROR MESSAGE:",
+                    error.message
+                );
+
 
                 message.textContent =
-                    "Starting survey...";
+                    "SURVEY READ FAILED: " +
+                    (
+                        error.message ||
+                        "Unknown error"
+                    );
 
+
+                submitSurvey.disabled =
+                    true;
+
+
+                return;
+
+            }
+
+
+
+            // ======================================
+            // STEP 2 — CREATE STARTED RECORD
+            // ======================================
+
+            message.textContent =
+                "Starting survey...";
+
+
+            try {
 
 
                 const completionsCollection =
@@ -613,7 +597,6 @@
                         db,
                         "surveyCompletions"
                     );
-
 
 
                 completionRef =
@@ -643,18 +626,13 @@
                     );
 
 
-
-                // ==================================
-                // START SUCCESS
-                // ==================================
-
                 console.log(
-                    "SURVEY STARTED"
+                    "SURVEY START RECORD CREATED"
                 );
 
 
                 console.log(
-                    "Completion ID:",
+                    "COMPLETION ID:",
                     completionRef.id
                 );
 
@@ -669,8 +647,7 @@
 
 
                 console.error(
-                    "SURVEY START ERROR:",
-                    error
+                    "START RECORD CREATION FAILED"
                 );
 
 
@@ -687,7 +664,7 @@
 
 
                 message.textContent =
-                    "Unable to start the survey: " +
+                    "START RECORD FAILED: " +
                     (
                         error.message ||
                         "Unknown error"
@@ -697,6 +674,9 @@
                 submitSurvey.disabled =
                     true;
 
+
+                return;
+
             }
 
         }
@@ -705,7 +685,7 @@
 
 
     // ==========================================
-    // SURVEY SUBMISSION
+    // SUBMIT SURVEY
     // ==========================================
 
     surveyForm.addEventListener(
@@ -733,13 +713,13 @@
 
 
             // ======================================
-            // CHECK STARTED RECORD
+            // CHECK START RECORD
             // ======================================
 
             if (!completionRef) {
 
                 message.textContent =
-                    "The survey has not started correctly. Please refresh the page and try again.";
+                    "Survey start record is missing. Please refresh the page.";
 
                 return;
 
@@ -771,7 +751,7 @@
 
 
             // ======================================
-            // CHECK ALL QUESTIONS
+            // VALIDATE ANSWERS
             // ======================================
 
             if (
@@ -790,7 +770,7 @@
 
 
             // ======================================
-            // DISABLE SUBMIT BUTTON
+            // DISABLE BUTTON
             // ======================================
 
             submitSurvey.disabled =
@@ -807,7 +787,7 @@
 
 
             // ======================================
-            // COMPLETE SURVEY
+            // COMPLETE RECORD
             // ======================================
 
             try {
@@ -824,7 +804,7 @@
                             true,
 
                         points:
-                            surveyReward,
+                            10,
 
                         completedAt:
                             serverTimestamp(),
@@ -846,20 +826,13 @@
                 );
 
 
-
-                // ==================================
-                // SUCCESS
-                // ==================================
-
                 console.log(
                     "SURVEY COMPLETED SUCCESSFULLY"
                 );
 
 
                 message.textContent =
-                    "Survey completed successfully! You earned " +
-                    surveyReward +
-                    " points.";
+                    "Survey completed successfully! You earned 10 points.";
 
 
                 submitSurvey.textContent =
@@ -887,13 +860,8 @@
             catch (error) {
 
 
-                // ==================================
-                // SUBMISSION ERROR
-                // ==================================
-
                 console.error(
-                    "SURVEY SUBMISSION ERROR:",
-                    error
+                    "SURVEY COMPLETION FAILED"
                 );
 
 
@@ -910,7 +878,7 @@
 
 
                 message.textContent =
-                    "Survey submission failed: " +
+                    "SURVEY COMPLETION FAILED: " +
                     (
                         error.message ||
                         "Unknown error"
