@@ -2,14 +2,19 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>SurveyMars Test Survey</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet"
+          href="style.css">
 
     <style>
+
         .survey-container {
             max-width: 700px;
             margin: 30px auto;
@@ -63,34 +68,55 @@
             margin-top: 15px;
             font-weight: bold;
         }
+
     </style>
+
 </head>
+
 
 <body>
 
+
 <header>
+
     <div class="logo">
-        <img src="surveymars-logo.png"
-             alt="SurveyMars"
-             style="max-width:180px;">
+
+        <img
+            src="surveymars-logo.png"
+            alt="SurveyMars"
+            style="max-width:180px;"
+        >
+
     </div>
+
 </header>
+
 
 <main class="survey-container">
 
+
     <div class="survey-card">
 
+
         <h1>SurveyMars Test Survey</h1>
+
 
         <p>
             Complete all three questions to finish this test survey.
         </p>
 
+
         <p>
-            <strong>Reward: 10 points</strong>
+            <strong>
+                Reward: 10 points
+            </strong>
         </p>
 
+
         <form id="surveyForm">
+
+
+            <!-- QUESTION 1 -->
 
             <div class="question">
 
@@ -98,28 +124,64 @@
                     1. Which type of opportunity are you most interested in?
                 </h3>
 
+
                 <label class="option">
-                    <input type="radio" name="question1" value="Surveys" required>
+
+                    <input
+                        type="radio"
+                        name="question1"
+                        value="Surveys"
+                        required
+                    >
+
                     Surveys
+
                 </label>
 
+
                 <label class="option">
-                    <input type="radio" name="question1" value="Mentorship">
+
+                    <input
+                        type="radio"
+                        name="question1"
+                        value="Mentorship"
+                    >
+
                     Mentorship
+
                 </label>
 
+
                 <label class="option">
-                    <input type="radio" name="question1" value="Learning">
+
+                    <input
+                        type="radio"
+                        name="question1"
+                        value="Learning"
+                    >
+
                     Learning opportunities
+
                 </label>
 
+
                 <label class="option">
-                    <input type="radio" name="question1" value="Business">
+
+                    <input
+                        type="radio"
+                        name="question1"
+                        value="Business"
+                    >
+
                     Business opportunities
+
                 </label>
 
             </div>
 
+
+
+            <!-- QUESTION 2 -->
 
             <div class="question">
 
@@ -127,23 +189,51 @@
                     2. How often would you like to receive new opportunities?
                 </h3>
 
+
                 <label class="option">
-                    <input type="radio" name="question2" value="Daily" required>
+
+                    <input
+                        type="radio"
+                        name="question2"
+                        value="Daily"
+                        required
+                    >
+
                     Daily
+
                 </label>
 
+
                 <label class="option">
-                    <input type="radio" name="question2" value="Weekly">
+
+                    <input
+                        type="radio"
+                        name="question2"
+                        value="Weekly"
+                    >
+
                     Weekly
+
                 </label>
 
+
                 <label class="option">
-                    <input type="radio" name="question2" value="Monthly">
+
+                    <input
+                        type="radio"
+                        name="question2"
+                        value="Monthly"
+                    >
+
                     Monthly
+
                 </label>
 
             </div>
 
+
+
+            <!-- QUESTION 3 -->
 
             <div class="question">
 
@@ -151,55 +241,104 @@
                     3. How would you describe your interest in SurveyMars?
                 </h3>
 
+
                 <label class="option">
-                    <input type="radio" name="question3" value="Very Interested" required>
+
+                    <input
+                        type="radio"
+                        name="question3"
+                        value="Very Interested"
+                        required
+                    >
+
                     Very interested
+
                 </label>
 
+
                 <label class="option">
-                    <input type="radio" name="question3" value="Interested">
+
+                    <input
+                        type="radio"
+                        name="question3"
+                        value="Interested"
+                    >
+
                     Interested
+
                 </label>
 
+
                 <label class="option">
-                    <input type="radio" name="question3" value="Not Sure">
+
+                    <input
+                        type="radio"
+                        name="question3"
+                        value="Not Sure"
+                    >
+
                     Not sure yet
+
                 </label>
 
             </div>
 
 
-            <button type="submit" id="submitSurvey">
+
+            <!-- SUBMIT BUTTON -->
+
+            <button
+                type="submit"
+                id="submitSurvey"
+            >
                 Submit Survey
             </button>
 
+
             <p id="message"></p>
+
 
         </form>
 
+
     </div>
+
 
 </main>
 
 
+
 <script type="module">
+
+
+    // ==========================================
+    // FIREBASE IMPORTS
+    // ==========================================
 
     import {
         initializeApp
-    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+    }
+    from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
 
     import {
         getAuth,
         onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+    }
+    from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
 
     import {
         getFirestore,
         collection,
         addDoc,
         updateDoc,
+        doc,
+        getDoc,
         serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+    }
+    from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
 
 
     // ==========================================
@@ -208,47 +347,73 @@
 
     const firebaseConfig = {
 
-        apiKey: "AIzaSyDfY0BVSt_NIqUf3rwgPlRRXLJFLq7-7M8",
+        apiKey:
+            "AIzaSyDfY0BVSt_NIqUf3rwgPlRRXLJFLq7-7M8",
 
-        authDomain: "surveymars-11698.firebaseapp.com",
+        authDomain:
+            "surveymars-11698.firebaseapp.com",
 
-        projectId: "surveymars-11698",
+        projectId:
+            "surveymars-11698",
 
-        storageBucket: "surveymars-11698.firebasestorage.app",
+        storageBucket:
+            "surveymars-11698.firebasestorage.app",
 
-        messagingSenderId: "503727549780",
+        messagingSenderId:
+            "503727549780",
 
-        appId: "1:503727549780:web:326a85d7b1f7eca730acc1"
+        appId:
+            "1:503727549780:web:326a85d7b1f7eca730acc1"
 
     };
+
 
 
     // ==========================================
     // INITIALIZE FIREBASE
     // ==========================================
 
-    const app = initializeApp(firebaseConfig);
+    const app =
+        initializeApp(firebaseConfig);
 
-    const auth = getAuth(app);
 
-    const db = getFirestore(app);
+    const auth =
+        getAuth(app);
+
+
+    const db =
+        getFirestore(app);
+
 
 
     // ==========================================
-    // SURVEY INFORMATION
+    // ACTUAL FIRESTORE SURVEY ID
     // ==========================================
 
-    const SURVEY_ID = "test-survey";
+    /*
+     * This is the actual Firestore document ID
+     * for:
+     *
+     * SurveyMars Test 2
+     *
+     * surveys/t2jMm12vo6rAmLQxNOsM
+     */
 
-    const TEST_REWARD = 10;
+    const SURVEY_ID =
+        "t2jMm12vo6rAmLQxNOsM";
 
 
-    // This variable will hold the Firestore
-    // document created when the survey starts.
+
+    // ==========================================
+    // VARIABLES
+    // ==========================================
 
     let completionRef = null;
 
     let currentUser = null;
+
+    let surveyReward = 0;
+
 
 
     // ==========================================
@@ -258,142 +423,298 @@
     const surveyForm =
         document.getElementById("surveyForm");
 
+
     const submitSurvey =
         document.getElementById("submitSurvey");
 
+
     const message =
         document.getElementById("message");
+
 
 
     // ==========================================
     // AUTHENTICATION
     // ==========================================
 
-    onAuthStateChanged(auth, async (user) => {
-
-        if (!user) {
-
-            window.location.href = "login.html";
-
-            return;
-        }
+    onAuthStateChanged(
+        auth,
+        async (user) => {
 
 
-        currentUser = user;
+            // ======================================
+            // USER NOT LOGGED IN
+            // ======================================
+
+            if (!user) {
+
+                window.location.href =
+                    "login.html";
+
+                return;
+
+            }
 
 
-        console.log(
-            "SURVEYMARS USER:",
-            user.uid
-        );
+            // ======================================
+            // SAVE CURRENT USER
+            // ======================================
 
-
-        console.log(
-            "SURVEYMARS EMAIL:",
-            user.email
-        );
-
-
-        // ======================================
-        // CREATE STARTED SURVEY RECORD
-        // ======================================
-
-        try {
-
-            message.textContent =
-                "Starting survey...";
-
-
-            const completionsCollection =
-                collection(
-                    db,
-                    "surveyCompletions"
-                );
-
-
-            /*
-             * IMPORTANT:
-             *
-             * We intentionally create the STARTED
-             * record directly.
-             *
-             * We do NOT perform a getDoc() first.
-             */
-
-            completionRef =
-                await addDoc(
-                    completionsCollection,
-                    {
-
-                        userId: user.uid,
-
-                        surveyId: SURVEY_ID,
-
-                        status: "started",
-
-                        points: 0,
-
-                        verified: false,
-
-                        startedAt:
-                            serverTimestamp()
-
-                    }
-                );
+            currentUser =
+                user;
 
 
             console.log(
-                "SURVEY STARTED"
+                "SURVEYMARS USER:",
+                user.uid
             );
+
 
             console.log(
-                "Completion ID:",
-                completionRef.id
+                "SURVEYMARS EMAIL:",
+                user.email
             );
 
 
-            message.textContent =
-                "Survey ready. Please answer all three questions.";
 
-        } catch (error) {
+            // ======================================
+            // LOAD SURVEY FROM FIRESTORE
+            // ======================================
 
-            console.error(
-                "SURVEY START ERROR:",
-                error
-            );
-
-            console.error(
-                "ERROR CODE:",
-                error.code
-            );
-
-            console.error(
-                "ERROR MESSAGE:",
-                error.message
-            );
+            try {
 
 
-            message.textContent =
-                "Unable to start the survey: " +
-                (error.message || "Unknown error");
+                message.textContent =
+                    "Loading survey...";
 
 
-            submitSurvey.disabled = true;
+
+                const surveyRef =
+                    doc(
+                        db,
+                        "surveys",
+                        SURVEY_ID
+                    );
+
+
+
+                const surveySnapshot =
+                    await getDoc(
+                        surveyRef
+                    );
+
+
+
+                // ==================================
+                // CHECK SURVEY EXISTS
+                // ==================================
+
+                if (
+                    !surveySnapshot.exists()
+                ) {
+
+                    message.textContent =
+                        "This survey could not be found.";
+
+                    submitSurvey.disabled =
+                        true;
+
+                    return;
+
+                }
+
+
+
+                // ==================================
+                // GET SURVEY DATA
+                // ==================================
+
+                const surveyData =
+                    surveySnapshot.data();
+
+
+
+                console.log(
+                    "SURVEY DATA:",
+                    surveyData
+                );
+
+
+
+                // ==================================
+                // CHECK PUBLISHED STATUS
+                // ==================================
+
+                if (
+                    surveyData.status !==
+                    "published"
+                ) {
+
+                    message.textContent =
+                        "This survey is not currently available.";
+
+                    submitSurvey.disabled =
+                        true;
+
+                    return;
+
+                }
+
+
+
+                // ==================================
+                // CHECK REWARD
+                // ==================================
+
+                if (
+                    typeof surveyData.points !==
+                    "number"
+                ) {
+
+                    message.textContent =
+                        "This survey has an invalid reward configuration.";
+
+                    submitSurvey.disabled =
+                        true;
+
+                    return;
+
+                }
+
+
+
+                // ==================================
+                // STORE FIRESTORE REWARD
+                // ==================================
+
+                surveyReward =
+                    surveyData.points;
+
+
+
+                console.log(
+                    "SURVEY REWARD:",
+                    surveyReward
+                );
+
+
+
+                // ==================================
+                // CREATE STARTED RECORD
+                // ==================================
+
+                message.textContent =
+                    "Starting survey...";
+
+
+
+                const completionsCollection =
+                    collection(
+                        db,
+                        "surveyCompletions"
+                    );
+
+
+
+                completionRef =
+                    await addDoc(
+                        completionsCollection,
+                        {
+
+                            userId:
+                                user.uid,
+
+                            surveyId:
+                                SURVEY_ID,
+
+                            status:
+                                "started",
+
+                            points:
+                                0,
+
+                            verified:
+                                false,
+
+                            startedAt:
+                                serverTimestamp()
+
+                        }
+                    );
+
+
+
+                // ==================================
+                // START SUCCESS
+                // ==================================
+
+                console.log(
+                    "SURVEY STARTED"
+                );
+
+
+                console.log(
+                    "Completion ID:",
+                    completionRef.id
+                );
+
+
+                message.textContent =
+                    "Survey ready. Please answer all three questions.";
+
+
+            }
+
+            catch (error) {
+
+
+                console.error(
+                    "SURVEY START ERROR:",
+                    error
+                );
+
+
+                console.error(
+                    "ERROR CODE:",
+                    error.code
+                );
+
+
+                console.error(
+                    "ERROR MESSAGE:",
+                    error.message
+                );
+
+
+                message.textContent =
+                    "Unable to start the survey: " +
+                    (
+                        error.message ||
+                        "Unknown error"
+                    );
+
+
+                submitSurvey.disabled =
+                    true;
+
+            }
 
         }
+    );
 
-    });
 
 
     // ==========================================
-    // SUBMIT SURVEY
+    // SURVEY SUBMISSION
     // ==========================================
 
     surveyForm.addEventListener(
         "submit",
         async (event) => {
 
+
             event.preventDefault();
+
 
 
             // ======================================
@@ -406,11 +727,13 @@
                     "Please log in first.";
 
                 return;
+
             }
 
 
+
             // ======================================
-            // CHECK SURVEY RECORD
+            // CHECK STARTED RECORD
             // ======================================
 
             if (!completionRef) {
@@ -419,11 +742,13 @@
                     "The survey has not started correctly. Please refresh the page and try again.";
 
                 return;
+
             }
 
 
+
             // ======================================
-            // CHECK ANSWERS
+            // GET ANSWERS
             // ======================================
 
             const question1 =
@@ -431,16 +756,23 @@
                     'input[name="question1"]:checked'
                 );
 
+
             const question2 =
                 document.querySelector(
                     'input[name="question2"]:checked'
                 );
+
 
             const question3 =
                 document.querySelector(
                     'input[name="question3"]:checked'
                 );
 
+
+
+            // ======================================
+            // CHECK ALL QUESTIONS
+            // ======================================
 
             if (
                 !question1 ||
@@ -452,14 +784,18 @@
                     "Please answer all three questions.";
 
                 return;
+
             }
 
 
+
             // ======================================
-            // DISABLE BUTTON
+            // DISABLE SUBMIT BUTTON
             // ======================================
 
-            submitSurvey.disabled = true;
+            submitSurvey.disabled =
+                true;
+
 
             submitSurvey.textContent =
                 "Submitting...";
@@ -469,21 +805,26 @@
                 "Submitting your survey...";
 
 
+
+            // ======================================
+            // COMPLETE SURVEY
+            // ======================================
+
             try {
 
-                // ==================================
-                // COMPLETE THE STARTED RECORD
-                // ==================================
 
                 await updateDoc(
                     completionRef,
                     {
 
-                        status: "completed",
+                        status:
+                            "completed",
 
-                        verified: true,
+                        verified:
+                            true,
 
-                        points: TEST_REWARD,
+                        points:
+                            surveyReward,
 
                         completedAt:
                             serverTimestamp(),
@@ -505,46 +846,62 @@
                 );
 
 
+
+                // ==================================
+                // SUCCESS
+                // ==================================
+
                 console.log(
                     "SURVEY COMPLETED SUCCESSFULLY"
                 );
 
 
-                // ==================================
-                // SUCCESS MESSAGE
-                // ==================================
-
                 message.textContent =
-                    "Survey completed successfully! You earned 10 points.";
+                    "Survey completed successfully! You earned " +
+                    surveyReward +
+                    " points.";
 
 
                 submitSurvey.textContent =
                     "Survey Completed";
 
 
+
                 // ==================================
                 // RETURN TO DASHBOARD
                 // ==================================
 
-                setTimeout(() => {
+                setTimeout(
+                    () => {
 
-                    window.location.href =
-                        "dashboard.html";
+                        window.location.href =
+                            "dashboard.html";
 
-                }, 1500);
+                    },
+                    1500
+                );
 
 
-            } catch (error) {
+            }
+
+            catch (error) {
+
+
+                // ==================================
+                // SUBMISSION ERROR
+                // ==================================
 
                 console.error(
                     "SURVEY SUBMISSION ERROR:",
                     error
                 );
 
+
                 console.error(
                     "ERROR CODE:",
                     error.code
                 );
+
 
                 console.error(
                     "ERROR MESSAGE:",
@@ -554,10 +911,15 @@
 
                 message.textContent =
                     "Survey submission failed: " +
-                    (error.message || "Unknown error");
+                    (
+                        error.message ||
+                        "Unknown error"
+                    );
 
 
-                submitSurvey.disabled = false;
+                submitSurvey.disabled =
+                    false;
+
 
                 submitSurvey.textContent =
                     "Submit Survey";
@@ -567,7 +929,9 @@
         }
     );
 
+
 </script>
+
 
 </body>
 
