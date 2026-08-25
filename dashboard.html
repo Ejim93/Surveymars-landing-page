@@ -70,7 +70,8 @@
             <h2>🎓 Mentorship</h2>
 
             <p>
-                Discover mentorship opportunities and guidance available through SurveyMars.
+                Discover mentorship opportunities and guidance
+                available through SurveyMars.
             </p>
 
             <strong>
@@ -87,7 +88,8 @@
             <h2>🚀 Opportunities</h2>
 
             <p>
-                Explore verified opportunities that may support your career, skills or business goals.
+                Explore verified opportunities that may support
+                your career, skills or business goals.
             </p>
 
             <strong>
@@ -104,7 +106,8 @@
             <h2>🎁 Rewards</h2>
 
             <p>
-                Your eligible rewards and redemption options will appear here.
+                Your eligible rewards and redemption options
+                will appear here.
             </p>
 
             <strong>
@@ -148,6 +151,10 @@
 
 <script type="module">
 
+    // ==========================================
+    // FIREBASE IMPORTS
+    // ==========================================
+
     import {
         initializeApp
     } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
@@ -166,16 +173,14 @@
         query,
         where,
         getDocs,
-        addDoc,
-        serverTimestamp,
         doc,
         getDoc
     } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
-    // ==============================
+    // ==========================================
     // FIREBASE CONFIGURATION
-    // ==============================
+    // ==========================================
 
     const firebaseConfig = {
 
@@ -194,9 +199,9 @@
     };
 
 
-    // ==============================
+    // ==========================================
     // INITIALIZE FIREBASE
-    // ==============================
+    // ==========================================
 
     const app =
         initializeApp(firebaseConfig);
@@ -208,9 +213,9 @@
         getFirestore(app);
 
 
-    // ==============================
+    // ==========================================
     // PAGE ELEMENTS
-    // ==============================
+    // ==========================================
 
     const welcomeMessage =
         document.getElementById("welcomeMessage");
@@ -225,9 +230,9 @@
         document.getElementById("logoutButton");
 
 
-    // ==============================
+    // ==========================================
     // AUTHENTICATION PERSISTENCE
-    // ==============================
+    // ==========================================
 
     await setPersistence(
         auth,
@@ -235,9 +240,9 @@
     );
 
 
-    // ==============================
+    // ==========================================
     // CHECK LOGIN STATE
-    // ==============================
+    // ==========================================
 
     onAuthStateChanged(
         auth,
@@ -279,9 +284,9 @@
                 "! Welcome to your SurveyMars dashboard.";
 
 
-            // ==============================
+            // ======================================
             // LOAD USER POINTS
-            // ==============================
+            // ======================================
 
             try {
 
@@ -333,9 +338,9 @@
             }
 
 
-            // ==============================
+            // ======================================
             // LOAD PUBLISHED SURVEYS
-            // ==============================
+            // ======================================
 
             await loadSurveys();
 
@@ -343,9 +348,9 @@
     );
 
 
-    // ==============================
+    // ==========================================
     // LOAD PUBLISHED SURVEYS
-    // ==============================
+    // ==========================================
 
     async function loadSurveys() {
 
@@ -434,13 +439,13 @@
                         "Take Survey";
 
 
-                    // ==============================
+                    // ==================================
                     // TAKE SURVEY
-                    // ==============================
+                    // ==================================
 
                     button.addEventListener(
                         "click",
-                        async () => {
+                        () => {
 
                             const user =
                                 auth.currentUser;
@@ -459,85 +464,54 @@
                             }
 
 
-                            try {
+                            /*
+                             * IMPORTANT:
+                             *
+                             * The dashboard NO LONGER creates
+                             * a surveyCompletions document.
+                             *
+                             * The actual survey page creates
+                             * the single participation record.
+                             */
 
-                                button.disabled =
-                                    true;
-
-
-                                button.textContent =
-                                    "Starting survey...";
-
-
-                                // Create participation record
-
-                                const completionRef =
-                                    await addDoc(
-                                        collection(
-                                            db,
-                                            "surveyCompletions"
-                                        ),
-                                        {
-
-                                            userId:
-                                                user.uid,
-
-                                            surveyId:
-                                                docSnapshot.id,
-
-                                            status:
-                                                "started",
-
-                                            points:
-                                                0,
-
-                                            verified:
-                                                false,
-
-                                            startedAt:
-                                                serverTimestamp()
-
-                                        }
-                                    );
+                            const surveyLink =
+                                survey.surveyLink;
 
 
-                                // Send completion ID to survey page
-
-                                const separator =
-                                    survey.surveyLink.includes("?")
-                                        ? "&"
-                                        : "?";
-
-
-                                window.location.href =
-                                    survey.surveyLink +
-                                    separator +
-                                    "completionId=" +
-                                    encodeURIComponent(
-                                        completionRef.id
-                                    );
-
-                            } catch (error) {
+                            if (
+                                !surveyLink ||
+                                typeof surveyLink !== "string"
+                            ) {
 
                                 console.error(
-                                    "Could not start survey:",
-                                    error
+                                    "Survey has no valid surveyLink:",
+                                    docSnapshot.id
                                 );
-
-
-                                button.disabled =
-                                    false;
-
-
-                                button.textContent =
-                                    "Take Survey";
-
 
                                 alert(
-                                    "We could not record your survey participation. Please try again."
+                                    "This survey is not configured correctly yet."
                                 );
 
+                                return;
                             }
+
+
+                            button.disabled =
+                                true;
+
+
+                            button.textContent =
+                                "Opening survey...";
+
+
+                            /*
+                             * Open the survey directly.
+                             *
+                             * No completionId is created here.
+                             */
+
+                            window.location.href =
+                                surveyLink;
 
                         }
                     );
@@ -575,9 +549,9 @@
     }
 
 
-    // ==============================
+    // ==========================================
     // LOG OUT
-    // ==============================
+    // ==========================================
 
     logoutButton.addEventListener(
         "click",
