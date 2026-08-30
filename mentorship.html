@@ -70,24 +70,90 @@
         }
 
         .hero {
-            background: linear-gradient(
-                135deg,
-                #ff9800,
-                #ffb52e
-            );
+background: linear-gradient(
+135deg,
+#ff9800,
+#ffb52e
+);
 
-            color: white;
-            padding: 30px 25px;
-            border-radius: 16px;
-            margin-bottom: 25px;
-            box-shadow:
-                0 4px 15px rgba(0,0,0,0.10);
-        }
+color: white;
+padding: 38px 28px;
+border-radius: 18px;
+margin-bottom: 30px;
 
-        .hero h1 {
-            margin-top: 0;
-            font-size: 30px;
-        }
+box-shadow:
+    0 6px 20px rgba(0,0,0,0.12);
+
+}
+
+.hero-content {
+max-width: 700px;
+}
+
+.hero-badge {
+display: inline-block;
+padding: 7px 12px;
+margin-bottom: 15px;
+
+background: rgba(255,255,255,0.20);
+border: 1px solid rgba(255,255,255,0.35);
+
+border-radius: 20px;
+
+font-size: 12px;
+font-weight: bold;
+letter-spacing: 0.5px;
+
+}
+
+.hero h1 {
+margin: 0 0 15px;
+font-size: 34px;
+line-height: 1.2;
+}
+
+.hero-description {
+margin: 0;
+font-size: 17px;
+line-height: 1.7;
+}
+
+.hero-actions {
+display: flex;
+gap: 12px;
+flex-wrap: wrap;
+margin-top: 25px;
+}
+
+.hero-primary-button,
+.hero-secondary-button {
+display: inline-block;
+padding: 13px 18px;
+border-radius: 9px;
+
+text-decoration: none;
+font-weight: bold;
+text-align: center;
+
+}
+
+.hero-primary-button {
+background: white;
+color: #e87900;
+}
+
+.hero-secondary-button {
+background: rgba(255,255,255,0.15);
+color: white;
+border: 1px solid rgba(255,255,255,0.60);
+}
+
+.hero-note {
+margin: 22px 0 0;
+font-size: 13px;
+line-height: 1.5;
+opacity: 0.95;
+}
 
         .hero p {
             line-height: 1.6;
@@ -284,27 +350,52 @@
 
 
 
-        <!-- HERO -->
+        <!-- HERO --><section class="hero"><div class="hero-content">
 
-        <section class="hero">
+    <div class="hero-badge">
+        🤝 MENTORSHIP & GROWTH
+    </div>
 
-            <h1>
-                🤝 SurveyMars Mentorship
-            </h1>
+    <h1>
+        Learn From Experience.<br>
+        Grow With Guidance.
+    </h1>
 
-            <p>
-                Connect with guidance, experience and
-                opportunities designed to help you grow
-                your skills, career or business.
-            </p>
+    <p class="hero-description">
+        Connect with mentors, discover practical guidance
+        and explore opportunities designed to help you
+        grow your skills, career or business.
+    </p>
 
-            <p>
-                SurveyMars will gradually introduce
-                verified mentorship opportunities for
-                members.
-            </p>
+    <div class="hero-actions">
 
-        </section>
+        <a
+            href="#mentorship-opportunities"
+            class="hero-primary-button">
+
+            🔎 Find a Mentor
+
+        </a>
+
+        <a
+            href="#become-mentor"
+            class="hero-secondary-button">
+
+            🌟 Become a Mentor
+
+        </a>
+
+    </div>
+
+    <p class="hero-note">
+        🔐 Verified mentorship opportunities will be
+        introduced as the SurveyMars mentorship system
+        develops.
+    </p>
+
+</div>
+
+</section>
 
 
 
