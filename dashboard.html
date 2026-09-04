@@ -1129,8 +1129,11 @@
 // ==========================================
 // FIREBASE IMPORTS
 // ==========================================
-
 import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import {
+    
     getAuth,
     onAuthStateChanged,
     signOut
@@ -1176,16 +1179,18 @@ const firebaseConfig = {
 
 };
 
-
-// ==========================================
-// INITIALIZE FIREBASE
-// ==========================================
-
-const app =
+    const app =
     initializeApp(
         firebaseConfig
     );
 
+const auth = getAuth(app);
+
+const db = getFirestore(app);
+
+// ==========================================
+// INITIALIZE FIREBASE
+// ==========================================
 
 const auth =
     getAuth(app);
