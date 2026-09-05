@@ -793,23 +793,22 @@
             try {
 
 
-                await updateDoc(
-                    completionRef,
-                    {
+               await updateDoc(
+    completionRef,
+    {
+        status:
+            "pending",
 
-                        status:
-                            "completed",
+        verified:
+            false,
 
-                        verified:
-                            true,
+        points:
+            0,
 
-                        points:
-                            10,
+        submittedAt:
+            serverTimestamp(),
 
-                        completedAt:
-                            serverTimestamp(),
-
-                        answers: {
+        answers: { 
 
                             question1:
                                 question1.value,
@@ -831,13 +830,12 @@
                 );
 
 
-                message.textContent =
-                    "Survey completed successfully! You earned 10 points.";
+            message.textContent =
+    "Survey submitted successfully! Your response is awaiting verification.";
 
-
-                submitSurvey.textContent =
-                    "Survey Completed";
-
+                
+            submitSurvey.textContent =
+                   "Submitted for Verification";
 
 
                 // ==================================
@@ -845,14 +843,14 @@
                 // ==================================
 
                 setTimeout(
-                    () => {
+    () => {
 
-                        window.location.href =
-                            "dashboard.html";
+        window.location.href =
+            "dashboard.html";
 
-                    },
-                    1500
-                );
+    },
+    2500
+);
 
 
             }
