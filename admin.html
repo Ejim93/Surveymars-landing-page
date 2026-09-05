@@ -126,6 +126,18 @@
 
             </div>
 
+            <!-- PENDING SURVEY VERIFICATIONS -->
+
+<div class="dashboard-card">
+
+    <h2>🔎 Pending Survey Verifications</h2>
+
+    <div id="pendingCompletions">
+        Loading pending submissions...
+    </div>
+
+</div>
+
 
             <button id="logoutButton">
                 Log Out
@@ -158,6 +170,8 @@
         doc,
         updateDoc,
         deleteDoc
+        where 
+        query 
     } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
@@ -219,6 +233,8 @@
 
     const surveyList =
         document.getElementById("surveyList");
+    const pendingCompletions =
+    document.getElementById("pendingCompletions");
 
     const logoutButton =
         document.getElementById("logoutButton");
@@ -359,6 +375,7 @@
 
 
                 await loadSurveys();
+await loadPendingCompletions();
 
 
             } catch (error) {
@@ -650,7 +667,162 @@
 
         }
     );
+// ==========================================
+// LOAD PENDING SURVEY COMPLETIONS
+// ==========================================
 
+async function loadPendingCompletions() {
+
+    try {
+
+        const completionsQuery =
+            query(
+                collection(db, "surveyCompletions"),
+                where("status", "==", "pending")
+            );
+
+        const snapshot =
+            await getDocs(completionsQuery);
+
+
+        if (snapshot.empty) {
+
+            pendingCompletions.innerHTML =
+                "<p>No pending survey submissions.</p>";
+
+            return;
+
+        }
+
+
+        pendingCompletions.innerHTML = "";
+
+
+        snapshot.forEach(
+            (completionSnapshot) => {
+
+                const completion =
+                    completionSnapshot.data();
+
+
+                const card =
+                    document.createElement("div");
+
+                card.className =
+                    "dashboard-card";
+
+
+                const user =
+                    document.createElement("p");
+
+                user.innerHTML =
+                    "<strong>User:</strong> " +
+                    escapeHTML(
+                        completion.userId || "Unknown"
+                    );
+
+
+                const survey =
+                    document.createElement("p");
+
+                survey.innerHTML =
+                    "<strong>Survey ID:</strong> " +
+                    escapeHTML(
+                        completion.surveyId || "Unknown"
+                    );
+
+
+                const status =
+                    document.createElement("p");
+
+                status.innerHTML =
+                    "<strong>Status:</strong> Pending verification";
+
+
+                const points =
+                    document.createElement("p");
+
+                points.innerHTML =
+                    "<strong>Points:</strong> 0";
+
+
+                const verifyButton =
+                    document.createElement("button");
+
+                verifyButton.textContent =
+                    "Verify Completion";
+
+
+                verifyButton.addEventListener(
+                    "click",
+                    async () => {
+
+                        try {
+
+                            await updateDoc(
+                                doc(
+                                    db,
+                                    "surveyCompletions",
+                                    completionSnapshot.id
+                                ),
+                                {
+                                    status: "completed",
+                                    verified: true,
+                                    points: 0,
+                                    verifiedAt:
+                                        serverTimestamp()
+                                }
+                            );
+
+
+                            alert(
+                                "Survey completion verified."
+                            );
+
+
+                            await loadPendingCompletions();
+
+
+                        } catch (error) {
+
+                            console.error(error);
+
+                            alert(
+                                "Unable to verify completion."
+                            );
+
+                        }
+
+                    }
+                );
+
+
+                card.appendChild(user);
+                card.appendChild(survey);
+                card.appendChild(status);
+                card.appendChild(points);
+                card.appendChild(verifyButton);
+
+
+                pendingCompletions.appendChild(card);
+
+            }
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "PENDING COMPLETIONS ERROR:",
+            error
+        );
+
+        pendingCompletions.innerHTML =
+            "<p>Unable to load pending submissions.</p>";
+
+    }
+
+}
 </script>
 
 </body>
