@@ -264,17 +264,12 @@
     console.log("ADMIN UID:", ADMIN_UID);
 
     if (user.uid !== ADMIN_UID) {
+    adminMessage.textContent =
+        "Access denied. Your UID: " + user.uid +
+        " | Admin UID: " + ADMIN_UID;
 
-        adminMessage.textContent =
-            "Access denied. Administrator use only.";
-
-        setTimeout(() => {
-            window.location.href = "dashboard.html";
-        }, 2000);
-
-        return;
-    }
-
+    return;
+}
     adminMessage.textContent =
         "Administrator access granted.";
 
