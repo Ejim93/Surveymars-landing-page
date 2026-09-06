@@ -544,3 +544,170 @@ footer a:hover {
     font-size: 14px;
     font-weight: bold;
 }
+/* ==================================================
+   SURVEYMARS - BUSINESS PAGE
+   ================================================== */
+
+.business-hero {
+    padding: 70px 20px;
+    text-align: center;
+    background: #f7f7f7;
+}
+
+.business-hero-content {
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+.business-label {
+    font-weight: bold;
+    letter-spacing: 1px;
+    font-size: 14px;
+}
+
+.business-hero h1 {
+    font-size: 42px;
+    line-height: 1.2;
+    margin: 15px 0;
+}
+
+.business-hero p {
+    max-width: 700px;
+    margin: 0 auto 25px;
+    line-height: 1.7;
+}
+
+.business-button {
+    display: inline-block;
+    padding: 14px 24px;
+    background: orange;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.business-section {
+    padding: 60px 20px;
+    max-width: 1100px;
+    margin: auto;
+}
+
+.business-section h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 30px;
+}
+
+.business-section > p {
+    max-width: 750px;
+    margin: 0 auto 35px;
+    text-align: center;
+    line-height: 1.7;
+}
+
+.business-light {
+    background: #f8f8f8;
+    max-width: none;
+}
+
+.business-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.business-card {
+    padding: 25px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.business-card h3 {
+    margin-top: 0;
+}
+
+.business-card p {
+    line-height: 1.6;
+}
+
+.research-list {
+    max-width: 850px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.research-list > div {
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+}
+
+.research-list p {
+    margin-bottom: 0;
+    line-height: 1.6;
+}
+
+.business-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.business-step {
+    text-align: center;
+}
+
+.business-step span {
+    display: inline-flex;
+    width: 45px;
+    height: 45px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: orange;
+    color: white;
+    font-weight: bold;
+}
+
+.business-step p {
+    line-height: 1.6;
+}
+
+.business-request {
+    text-align: center;
+    background: #f7f7f7;
+    max-width: none;
+}
+
+.business-request p {
+    margin-bottom: 25px;
+}
+
+
+/* MOBILE */
+@media (max-width: 768px) {
+
+    .business-hero h1 {
+        font-size: 32px;
+    }
+
+    .business-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .research-list {
+        grid-template-columns: 1fr;
+    }
+
+    .business-steps {
+        grid-template-columns: 1fr;
+    }
+
+}
