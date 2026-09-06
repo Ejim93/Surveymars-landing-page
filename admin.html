@@ -245,49 +245,28 @@
 
     onAuthStateChanged(auth, async (user) => {
 
-        if (!user) {
+        if (user) {
 
-            adminMessage.textContent =
-                "Please log in first.";
+    console.log("CURRENT USER UID:", user.uid);
+    console.log("ADMIN UID:", ADMIN_UID);
 
-            setTimeout(() => {
-
-                window.location.href =
-                    "login.html";
-
-            }, 1500);
-
-            return;
-        }
-
-
-        if (user.uid !== ADMIN_UID) {
-
-            adminMessage.textContent =
-                "Access denied. Administrator access only.";
-
-            setTimeout(() => {
-
-                window.location.href =
-                    "dashboard.html";
-
-            }, 2000);
-
-            return;
-        }
-
-
+    if (user.uid !== ADMIN_UID) {
         adminMessage.textContent =
-            "Administrator access confirmed.";
+            "Access denied. Administrator use only.";
 
-        adminPanel.style.display =
-            "block";
+        setTimeout(() => {
+            window.location.href = "dashboard.html";
+        }, 2000);
 
+        return;
+    }
 
-        await loadSurveys();
-        await loadPendingCompletions();
+    adminMessage.textContent = "Administrator access granted.";
+    adminPanel.style.display = "block";
 
-    });
+    await loadSurveys();
+    await loadPendingCompletions();
+}
 
 
     // ==============================
