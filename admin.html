@@ -243,14 +243,28 @@
     // CHECK ADMIN ACCESS
     // ==============================
 
-    onAuthStateChanged(auth, async (user) => {
+  onAuthStateChanged(auth, async (user) => {
 
-        if (user) {
+    console.log("AUTH CHECK STARTED");
+    console.log("USER:", user);
+
+    if (!user) {
+
+        adminMessage.textContent =
+            "Please log in first.";
+
+        setTimeout(() => {
+            window.location.href = "login.html";
+        }, 2000);
+
+        return;
+    }
 
     console.log("CURRENT USER UID:", user.uid);
     console.log("ADMIN UID:", ADMIN_UID);
 
     if (user.uid !== ADMIN_UID) {
+
         adminMessage.textContent =
             "Access denied. Administrator use only.";
 
@@ -261,13 +275,15 @@
         return;
     }
 
-    adminMessage.textContent = "Administrator access granted.";
+    adminMessage.textContent =
+        "Administrator access granted.";
+
     adminPanel.style.display = "block";
 
     await loadSurveys();
     await loadPendingCompletions();
-}
 
+});  
 
     // ==============================
     // CREATE SURVEY
