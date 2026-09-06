@@ -475,26 +475,199 @@
 </main>
 
 
-<script>
+<script type="module">
 
-document
-    .getElementById("consumerPulseForm")
-    .addEventListener("submit", function(event) {
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
-        event.preventDefault();
+import {
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
-        document.getElementById(
-            "consumerPulseMessage"
-        ).textContent =
-            "Thank you. Your Consumer Pulse response has been recorded for this pilot test.";
+import {
+    getFirestore,
+    collection,
+    addDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-        document.getElementById(
-            "consumerPulseMessage"
-        ).style.marginTop = "20px";
 
-    });
+const firebaseConfig = {
+    apiKey: "AIzaSyDfY0BVSt_NIqUf3rwgPlRRXLJFLq7-7M8",
+    authDomain: "surveymars-11698.firebaseapp.com",
+    projectId: "surveymars-11698",
+    storageBucket: "surveymars-11698.firebasestorage.app",
+    messagingSenderId: "503727549780",
+    appId: "1:503727549780:web:326a85d7b1f7eca730acc1"
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const db = getFirestore(app);
+
+
+const form =
+    document.getElementById("consumerPulseForm");
+
+const message =
+    document.getElementById("consumerPulseMessage");
+
+
+let currentUser = null;
+
+
+onAuthStateChanged(auth, (user) => {
+
+    if (!user) {
+
+        currentUser = null;
+
+        message.textContent =
+            "Please log in to SurveyMars before completing this research survey.";
+
+        form.querySelector("button[type='submit']").disabled = true;
+
+        return;
+    }
+
+    currentUser = user;
+
+    form.querySelector("button[type='submit']").disabled = false;
+
+});
+
+
+form.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+
+    if (!currentUser) {
+
+        message.textContent =
+            "Please log in to SurveyMars before submitting this survey.";
+
+        return;
+    }
+
+
+    const submitButton =
+        document.getElementById("submitConsumerPulse");
+
+    submitButton.disabled = true;
+
+    message.textContent =
+        "Submitting your response...";
+
+
+    const answers = {
+
+        question1:
+            form.querySelector(
+                'input[name="question1"]:checked'
+            )?.value || "",
+
+        question2:
+            form.querySelector(
+                'input[name="question2"]:checked'
+            )?.value || "",
+
+        question3:
+            form.querySelector(
+                'input[name="question3"]:checked'
+            )?.value || "",
+
+        question4:
+            form.querySelector(
+                'input[name="question4"]:checked'
+            )?.value || "",
+
+        question5:
+            form.querySelector(
+                'input[name="question5"]:checked'
+            )?.value || "",
+
+        question6:
+            form.querySelector(
+                'input[name="question6"]:checked'
+            )?.value || "",
+
+        question7:
+            form.querySelector(
+                'input[name="question7"]:checked'
+            )?.value || "",
+
+        question8:
+            form.querySelector(
+                'input[name="question8"]:checked'
+            )?.value || "",
+
+        question9:
+            form.querySelector(
+                'input[name="question9"]:checked'
+            )?.value || "",
+
+        question10:
+            form.querySelector(
+                'textarea[name="question10"]'
+            )?.value.trim() || ""
+
+    };
+
+
+    try {
+
+        await addDoc(
+            collection(
+                db,
+                "consumerPulseResponses"
+            ),
+            {
+                userId: currentUser.uid,
+
+                surveyId:
+                    "SurveyMars Consumer Pulse — Fashion Test",
+
+                answers: answers,
+
+                submittedAt:
+                    serverTimestamp()
+            }
+        );
+
+
+        message.textContent =
+            "Thank you. Your Consumer Pulse response has been submitted successfully.";
+
+        message.style.marginTop = "20px";
+
+
+        form.reset();
+
+        submitButton.disabled = true;
+
+
+    } catch (error) {
+
+        console.error(
+            "Consumer Pulse submission error:",
+            error
+        );
+
+        message.textContent =
+            "We could not submit your response. Please try again.";
+
+        submitButton.disabled = false;
+
+    }
+
+});
 
 </script>
-
 </body>
 </html>
