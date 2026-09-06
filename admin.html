@@ -162,19 +162,18 @@
     } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
     import {
-        getFirestore,
-        collection,
-        addDoc,
-        getDocs,
-        serverTimestamp,
-        doc,
-        updateDoc,
-        deleteDoc
-        where 
-        query 
-    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
-
+    getFirestore,
+    collection,
+    addDoc,
+    getDocs,
+    serverTimestamp,
+    doc,
+    updateDoc,
+    deleteDoc,
+    where,
+    query
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+    
     // ==============================
     // FIREBASE CONFIGURATION
     // ==============================
@@ -286,6 +285,7 @@
 
 
         await loadSurveys();
+        await loadPendingCompletions();
 
     });
 
