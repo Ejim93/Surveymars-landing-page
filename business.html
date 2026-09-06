@@ -209,28 +209,128 @@
 
     </section>
 
+<!-- BUSINESS RESEARCH REQUEST -->
+<section
+    class="business-section business-request"
+    id="research-request">
 
-    <!-- REQUEST -->
-    <section
-        class="business-section business-request"
-        id="research-request">
+    <h2>Request Consumer Research</h2>
 
-        <h2>
-            Have a Business Question?
-        </h2>
+    <p>
+        Tell us what you want to understand about your customers.
+        Our team will review your request and contact you.
+    </p>
 
-        <p>
-            Tell SurveyMars what you want to understand about your customers.
-        </p>
+    <form id="businessRequestForm" class="business-form">
+
+        <label for="businessName">
+            Business Name
+        </label>
+
+        <input
+            type="text"
+            id="businessName"
+            name="businessName"
+            placeholder="Your business name"
+            required>
+
+
+        <label for="contactName">
+            Contact Name
+        </label>
+
+        <input
+            type="text"
+            id="contactName"
+            name="contactName"
+            placeholder="Your name"
+            required>
+
+
+        <label for="contact">
+            Email or Phone
+        </label>
+
+        <input
+            type="text"
+            id="contact"
+            name="contact"
+            placeholder="Email address or phone number"
+            required>
+
+
+        <label for="businessType">
+            Business Type
+        </label>
+
+        <input
+            type="text"
+            id="businessType"
+            name="businessType"
+            placeholder="e.g. Fashion, Food, Education, Fintech"
+            required>
+
+
+        <label for="researchQuestion">
+            What do you want to find out?
+        </label>
+
+        <textarea
+            id="researchQuestion"
+            name="researchQuestion"
+            rows="5"
+            placeholder="Example: We want to know whether customers would buy our new product at ₦25,000."
+            required></textarea>
+
+
+        <label for="targetCustomers">
+            Who are your target customers?
+        </label>
+
+        <textarea
+            id="targetCustomers"
+            name="targetCustomers"
+            rows="4"
+            placeholder="Example: Young adults in Nigeria aged 18–35."
+            required></textarea>
+
 
         <button
-            type="button"
-            class="business-button"
-            onclick="alert('Research request form coming next.')">
-            Request Consumer Research
+            type="submit"
+            class="business-button">
+            Continue
         </button>
 
-    </section>
+    </form>
+
+    <div
+        id="businessContactOptions"
+        style="display: none;">
+
+        <h3>How would you like to contact SurveyMars?</h3>
+
+        <p>
+            Your request has been prepared. Choose how you want to send it.
+        </p>
+
+        <a
+            id="whatsappBusinessLink"
+            class="business-button"
+            target="_blank"
+            rel="noopener">
+            💬 Send via WhatsApp
+        </a>
+
+        <a
+            id="emailBusinessLink"
+            class="business-button"
+            style="margin-left: 10px;">
+            📧 Send via Email
+        </a>
+
+    </div>
+
+</section>
 
 
     <!-- FOOTER -->
@@ -245,7 +345,99 @@
         </p>
 
     </footer>
+<script>
+document
+    .getElementById("businessRequestForm")
+    .addEventListener("submit", function(event) {
 
+        event.preventDefault();
+
+        const businessName =
+            document.getElementById("businessName").value.trim();
+
+        const contactName =
+            document.getElementById("contactName").value.trim();
+
+        const contact =
+            document.getElementById("contact").value.trim();
+
+        const businessType =
+            document.getElementById("businessType").value.trim();
+
+        const researchQuestion =
+            document.getElementById("researchQuestion").value.trim();
+
+        const targetCustomers =
+            document.getElementById("targetCustomers").value.trim();
+
+
+        const message =
+`Hello SurveyMars,
+
+I would like to request consumer research.
+
+Business Name: ${businessName}
+
+Contact Name: ${contactName}
+
+Email/Phone: ${contact}
+
+Business Type: ${businessType}
+
+What we want to find out:
+${researchQuestion}
+
+Target Customers:
+${targetCustomers}`;
+
+
+        const encodedMessage =
+            encodeURIComponent(message);
+
+
+        const whatsappLink =
+            "https://wa.me/2349037064597?text=" +
+            encodedMessage;
+
+
+        const emailSubject =
+            encodeURIComponent(
+                "SurveyMars Consumer Research Request"
+            );
+
+
+        const emailBody =
+            encodeURIComponent(message);
+
+
+        const emailLink =
+            "mailto:Ejimkenneth93@gmail.com?subject=" +
+            emailSubject +
+            "&body=" +
+            emailBody;
+
+
+        document.getElementById(
+            "whatsappBusinessLink"
+        ).href = whatsappLink;
+
+
+        document.getElementById(
+            "emailBusinessLink"
+        ).href = emailLink;
+
+
+        document.getElementById(
+            "businessRequestForm"
+        ).style.display = "none";
+
+
+        document.getElementById(
+            "businessContactOptions"
+        ).style.display = "block";
+
+    });
+</script>
 
 </body>
 
