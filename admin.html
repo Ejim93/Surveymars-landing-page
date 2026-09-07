@@ -125,6 +125,17 @@
                 </div>
 
             </div>
+            <!-- CONSUMER PULSE RESPONSES -->
+
+<div class="dashboard-card">
+
+    <h2>📈 Consumer Pulse Responses</h2>
+
+    <div id="consumerPulseResponses">
+        Loading Consumer Pulse responses...
+    </div>
+
+</div>
 
             <!-- PENDING SURVEY VERIFICATIONS -->
 
@@ -279,7 +290,8 @@
     adminPanel.style.display = "block";
 
     await loadSurveys();
-    await loadPendingCompletions();
+await loadConsumerPulseResponses();
+await loadPendingCompletions();
 
 });  
 
@@ -368,6 +380,7 @@
 
 
                 await loadSurveys();
+await loadConsumerPulseResponses();
 await loadPendingCompletions();
 
 
@@ -816,6 +829,112 @@ async function loadPendingCompletions() {
     }
 
 }
+    // ==========================================
+// LOAD CONSUMER PULSE RESPONSES
+// ==========================================
+
+async function loadConsumerPulseResponses() {
+
+    const responsesBox =
+        document.getElementById(
+            "consumerPulseResponses"
+        );
+
+    try {
+
+        const snapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "consumerPulseResponses"
+                )
+            );
+
+        if (snapshot.empty) {
+
+            responsesBox.innerHTML =
+                "<p>No Consumer Pulse responses yet.</p>";
+
+            return;
+        }
+
+        responsesBox.innerHTML = "";
+
+        snapshot.forEach(
+            (responseSnapshot) => {
+
+                const response =
+                    responseSnapshot.data();
+
+                const card =
+                    document.createElement("div");
+
+                card.className =
+                    "dashboard-card";
+
+                const user =
+                    document.createElement("p");
+
+                user.innerHTML =
+                    "<strong>User ID:</strong> " +
+                    escapeHTML(
+                        response.userId || "Unknown"
+                    );
+
+                const survey =
+                    document.createElement("p");
+
+                survey.innerHTML =
+                    "<strong>Survey:</strong> " +
+                    escapeHTML(
+                        response.surveyId || "Unknown"
+                    );
+
+                card.appendChild(user);
+                card.appendChild(survey);
+
+                const answers =
+                    response.answers || {};
+
+                for (
+                    let i = 1;
+                    i <= 10;
+                    i++
+                ) {
+
+                    const answer =
+                        document.createElement("p");
+
+                    answer.innerHTML =
+                        "<strong>Question " +
+                        i +
+                        ":</strong> " +
+                        escapeHTML(
+                            answers["question" + i] || ""
+                        );
+
+                    card.appendChild(answer);
+
+                }
+
+                responsesBox.appendChild(card);
+
+            }
+        );
+
+    } catch (error) {
+
+        console.error(
+            "CONSUMER PULSE RESPONSES ERROR:",
+            error
+        );
+
+        responsesBox.innerHTML =
+            "<p>Unable to load Consumer Pulse responses.</p>";
+
+    }
+
+ }
 </script>
 
 </body>
