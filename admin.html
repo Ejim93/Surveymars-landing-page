@@ -851,6 +851,11 @@ async function loadConsumerPulseResponses() {
             "consumerPulseResponses"
         );
 
+    const resultsBox =
+        document.getElementById(
+            "consumerPulseResults"
+        );
+
     try {
 
         const snapshot =
@@ -861,10 +866,15 @@ async function loadConsumerPulseResponses() {
                 )
             );
 
+        let question1Counts = {};
+
         if (snapshot.empty) {
 
             responsesBox.innerHTML =
                 "<p>No Consumer Pulse responses yet.</p>";
+
+            resultsBox.innerHTML =
+                "<p>No results yet.</p>";
 
             return;
         }
@@ -907,6 +917,12 @@ async function loadConsumerPulseResponses() {
                 const answers =
                     response.answers || {};
 
+                const question1Answer =
+                    answers.question1 || "No answer";
+
+                question1Counts[question1Answer] =
+                    (question1Counts[question1Answer] || 0) + 1;
+
                 for (
                     let i = 1;
                     i <= 10;
@@ -933,6 +949,23 @@ async function loadConsumerPulseResponses() {
             }
         );
 
+        resultsBox.innerHTML =
+            "<h3>Question 1 Results</h3>";
+
+        Object.entries(question1Counts).forEach(
+            ([answer, count]) => {
+
+                const result =
+                    document.createElement("p");
+
+                result.textContent =
+                    answer + ": " + count;
+
+                resultsBox.appendChild(result);
+
+            }
+        );
+
     } catch (error) {
 
         console.error(
@@ -943,9 +976,12 @@ async function loadConsumerPulseResponses() {
         responsesBox.innerHTML =
             "<p>Unable to load Consumer Pulse responses.</p>";
 
+        resultsBox.innerHTML =
+            "<p>Unable to load results.</p>";
+
     }
 
- }
+}
 </script>
 
 </body>
