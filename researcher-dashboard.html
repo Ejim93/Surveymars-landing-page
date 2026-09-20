@@ -1,1 +1,418 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SurveyMars | Research Client Portal</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #243247;
+        }
+
+        header {
+            background: #ffffff;
+            padding: 16px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 2px 8px #00000008;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand img {
+            width: 145px;
+            max-width: 40vw;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .brand h2 {
+            color: #17345c;
+            font-size: 18px;
+        }
+
+        .brand small {
+            color: #718096;
+            font-size: 11px;
+        }
+
+        .portal-label {
+            background: #fff0df;
+            color: #c76712;
+            padding: 9px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .welcome {
+            background: linear-gradient(120deg, #17345c, #28558a);
+            color: white;
+            padding: 30px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+        }
+
+        .welcome h1 {
+            font-size: 27px;
+            margin-bottom: 10px;
+        }
+
+        .welcome p {
+            line-height: 1.6;
+            color: #e3ebf7;
+        }
+
+        .section-title {
+            margin: 28px 0 16px;
+            color: #17345c;
+            font-size: 21px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            border: 1px solid #e7edf5;
+        }
+
+        .stat-card h2 {
+            color: #17345c;
+            font-size: 30px;
+            margin: 10px 0;
+        }
+
+        .stat-card p {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .stat-icon {
+            font-size: 24px;
+        }
+
+        .panel {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #e7edf5;
+            margin-bottom: 22px;
+        }
+
+        .panel h3 {
+            color: #17345c;
+            margin-bottom: 14px;
+        }
+
+        .empty-state {
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            padding: 30px 15px;
+            text-align: center;
+            border-radius: 10px;
+            line-height: 1.8;
+        }
+
+        .empty-state .symbol {
+            font-size: 35px;
+        }
+
+        .empty-state p {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .action-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e7edf5;
+        }
+
+        .action-card h3 {
+            color: #17345c;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .action-card p {
+            color: #718096;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 14px;
+        }
+
+        .action-card button {
+            background: #ff9800;
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: not-allowed;
+            opacity: 0.75;
+        }
+
+        .status {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 6px 10px;
+            background: #edf2f7;
+            color: #526174;
+            font-size: 11px;
+            border-radius: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px 10px;
+            color: #718096;
+            font-size: 13px;
+        }
+
+        @media (max-width: 850px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .actions {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                width: 92%;
+                margin: 20px auto;
+            }
+
+            .welcome {
+                padding: 22px;
+            }
+
+            .welcome h1 {
+                font-size: 23px;
+            }
+
+            .stats {
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .panel {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+
+        <div class="brand">
+
+            <img
+                src="surveymars-logo.png"
+                alt="SurveyMars Logo"
+            >
+
+            <div>
+                <h2>Research & Insights</h2>
+                <small>Business Client Portal</small>
+            </div>
+
+        </div>
+
+        <span class="portal-label">
+            CLIENT PORTAL
+        </span>
+
+    </header>
+
+
+    <main class="container">
+
+        <section class="welcome">
+
+            <h1>Welcome to SurveyMars</h1>
+
+            <p>
+                Your research workspace.
+                Manage research projects, track responses,
+                and explore meaningful insights.
+            </p>
+
+        </section>
+
+
+        <h2 class="section-title">
+            Dashboard Overview
+        </h2>
+
+
+        <section class="stats">
+
+            <div class="stat-card">
+                <span class="stat-icon">📁</span>
+                <h2>0</h2>
+                <p>Total Projects</p>
+            </div>
+
+            <div class="stat-card">
+                <span class="stat-icon">📊</span>
+                <h2>0</h2>
+                <p>Active Projects</p>
+            </div>
+
+            <div class="stat-card">
+                <span class="stat-icon">👥</span>
+                <h2>0</h2>
+                <p>Total Responses</p>
+            </div>
+
+            <div class="stat-card">
+                <span class="stat-icon">✅</span>
+                <h2>0</h2>
+                <p>Completed Projects</p>
+            </div>
+
+        </section>
+
+
+        <h2 class="section-title">
+            My Research Projects
+        </h2>
+
+
+        <section class="panel">
+
+            <h3>Project Workspace</h3>
+
+            <div class="empty-state">
+
+                <div class="symbol">📋</div>
+
+                <strong>No research projects yet</strong>
+
+                <p>
+                    Your submitted research projects
+                    will appear here.
+                </p>
+
+                <span class="status">
+                    Project submission coming soon
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <h2 class="section-title">
+            Quick Access
+        </h2>
+
+
+        <section class="actions">
+
+            <div class="action-card">
+
+                <h3>➕ Submit Research Project</h3>
+
+                <p>
+                    Tell SurveyMars about your research
+                    needs and target audience.
+                </p>
+
+                <button disabled>
+                    Coming Soon
+                </button>
+
+            </div>
+
+
+            <div class="action-card">
+
+                <h3>📈 Research Results</h3>
+
+                <p>
+                    Review survey responses, research
+                    summaries and project insights.
+                </p>
+
+                <button disabled>
+                    Coming Soon
+                </button>
+
+            </div>
+
+
+            <div class="action-card">
+
+                <h3>🎧 Client Support</h3>
+
+                <p>
+                    Get assistance with your research
+                    projects and client account.
+                </p>
+
+                <button disabled>
+                    Coming Soon
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+
+        SurveyMars Research & Insights<br>
+        Business Client Portal
+
+    </footer>
+
+</body>
+</html>
