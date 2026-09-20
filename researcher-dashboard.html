@@ -242,6 +242,44 @@
                 padding: 16px;
             }
         }
+        /* Researcher Portal Navigation */
+.client-nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    padding: 15px 20px;
+    background: #ffffff;
+    border-bottom: 1px solid #eeeeee;
+    margin-bottom: 20px;
+}
+
+.client-nav a {
+    text-decoration: none;
+    color: #333333;
+    font-weight: 600;
+    padding: 10px 16px;
+    border-radius: 6px;
+    transition: 0.2s ease;
+}
+
+.client-nav a:hover {
+    background: #fff0dc;
+    color: #f28c00;
+}
+
+/* Mobile Navigation */
+@media (max-width: 600px) {
+    .client-nav {
+        gap: 6px;
+        padding: 12px 8px;
+    }
+
+    .client-nav a {
+        font-size: 14px;
+        padding: 9px 10px;
+    }
+}
     </style>
 </head>
 
