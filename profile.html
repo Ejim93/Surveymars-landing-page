@@ -34,7 +34,10 @@
 
 
         <form id="profileForm">
-
+            
+           <p id="profileEmail">
+    Loading account email...
+</p>
             <label for="fullName">Full Name</label>
 
             <input
@@ -179,6 +182,8 @@
 
         }
 
+        document.getElementById("profileEmail").textContent =
+    "Account: " + user.email;
 
         try {
 
