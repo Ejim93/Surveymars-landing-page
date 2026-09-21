@@ -470,10 +470,91 @@ opacity: 1;
             Our team will review your request.
         </p>
 
-        <p>
-            The submission form is being prepared.
-            Please check back soon.
-        </p>
+           <form id="researchProjectForm">
+
+    <label for="projectTitle">
+        Project Title
+    </label>
+
+    <input
+        type="text"
+        id="projectTitle"
+        name="projectTitle"
+        placeholder="Enter your research project title"
+        required
+    >
+
+    <label for="researchObjectives">
+        Research Objectives
+    </label>
+
+    <textarea
+        id="researchObjectives"
+        name="researchObjectives"
+        placeholder="What do you want to find out?"
+        rows="4"
+        required
+    ></textarea>
+
+    <label for="targetAudience">
+        Target Audience
+    </label>
+
+    <input
+        type="text"
+        id="targetAudience"
+        name="targetAudience"
+        placeholder="Who should participate in this research?"
+        required
+    >
+
+    <label for="targetLocation">
+        Target Location
+    </label>
+
+    <input
+        type="text"
+        id="targetLocation"
+        name="targetLocation"
+        placeholder="Country, state, or city"
+        required
+    >
+
+    <label for="respondentCount">
+        Estimated Number of Respondents
+    </label>
+
+    <input
+        type="number"
+        id="respondentCount"
+        name="respondentCount"
+        min="1"
+        placeholder="e.g. 500"
+        required
+    >
+
+    <label for="clientEmail">
+        Business Contact Email
+    </label>
+
+    <input
+        type="email"
+        id="clientEmail"
+        name="clientEmail"
+        placeholder="name@company.com"
+        required
+    >
+
+    <p>
+        This is a preview form. Your project
+        details will not be submitted or saved yet.
+    </p>
+
+    <button type="button" disabled>
+        Submission Coming Soon
+    </button>
+
+</form>
 
         <button
             type="button"
