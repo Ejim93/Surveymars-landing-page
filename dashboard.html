@@ -1304,15 +1304,50 @@ onAuthStateChanged(
         );
 
 
-        welcomeMessage.textContent =
-            "Hello, " +
-            (
-                user.displayName ||
-                user.email ||
-                "SurveyMars Member"
-            ) +
-            "! Explore surveys, learning and opportunities.";
+        let memberName =
+    user.displayName ||
+    user.email ||
+    "SurveyMars Member";
 
+
+try {
+
+    const profileRef =
+        doc(
+            db,
+            "users",
+            user.uid
+        );
+
+    const profileSnapshot =
+        await getDoc(
+            profileRef
+        );
+
+    if (profileSnapshot.exists()) {
+
+        const profileData =
+            profileSnapshot.data();
+
+        memberName =
+            profileData.fullName ||
+            memberName;
+    }
+
+} catch (profileError) {
+
+    console.error(
+        "PROFILE NAME ERROR:",
+        profileError
+    );
+
+}
+
+
+welcomeMessage.textContent =
+    "Hello, " +
+    memberName +
+    "! Explore surveys, learning and opportunities.";
 
         statusMessage.textContent =
             "";
