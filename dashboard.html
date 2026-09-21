@@ -1360,49 +1360,71 @@ welcomeMessage.textContent =
         try {
 
             const userRef =
-                doc(
-                    db,
-                    "users",
-                    user.uid
-                );
+    doc(
+        db,
+        "users",
+        user.uid
+    );
 
 
-            const userSnapshot =
-                await getDoc(
-                    userRef
-                );
+const userSnapshot =
+    await getDoc(
+        userRef
+    );
 
 
-            if (
-                userSnapshot.exists()
-            ) {
+if (
+    userSnapshot.exists()
+) {
 
-                const userData =
-                    userSnapshot.data();
-
-
-                const points =
-                    Number(
-                        userData.points || 0
-                    );
+    const userData =
+        userSnapshot.data();
 
 
-                pointsDisplay.textContent =
-                    points;
+    const points =
+        Number(
+            userData.points || 0
+        );
 
 
-                rewardBalance.textContent =
-                    points;
+    pointsDisplay.textContent =
+        points;
 
-            } else {
 
-                pointsDisplay.textContent =
-                    "0";
+    rewardBalance.textContent =
+        points;
 
-                rewardBalance.textContent =
-                    "0";
 
-            }
+    if (
+        userData.status === "active"
+    ) {
+
+        statusMessage.textContent =
+            "Your SurveyMars account is active.";
+
+    } else {
+
+        statusMessage.textContent =
+            "Your account status is: " +
+            (
+                userData.status ||
+                "unknown"
+            );
+
+    }
+
+} else {
+
+    pointsDisplay.textContent =
+        "0";
+
+    rewardBalance.textContent =
+        "0";
+
+    statusMessage.textContent =
+        "Your SurveyMars profile could not be found.";
+
+}
 
         } catch (error) {
 
