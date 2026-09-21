@@ -613,5 +613,47 @@ opacity: 1;
 
     </footer>
 
+    <script type="module">
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+import {
+    getAuth
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+import {
+    getFirestore
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+const firebaseConfig = {
+
+    apiKey: "AIzaSyDfY0BVSt_NIqUf3rwgPlRRXLJFLq7-7M8",
+
+    authDomain: "surveymars-11698.firebaseapp.com",
+
+    projectId: "surveymars-11698",
+
+    storageBucket: "surveymars-11698.firebasestorage.app",
+
+    messagingSenderId: "503727549780",
+
+    appId: "1:503727549780:web:326a85d7b1f7eca730acc1"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const db = getFirestore(app);
+
+
+console.log("SurveyMars Researcher Portal Firebase initialized.");
+
+</script>
 </body>
 </html>
