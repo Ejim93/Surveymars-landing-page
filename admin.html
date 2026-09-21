@@ -193,7 +193,8 @@
     updateDoc,
     deleteDoc,
     where,
-    query
+    query,
+    runTransaction
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
     
     // ==============================
@@ -776,20 +777,101 @@ async function loadPendingCompletions() {
 
                         try {
 
-                            await updateDoc(
-                                doc(
-                                    db,
-                                    "surveyCompletions",
-                                    completionSnapshot.id
-                                ),
-                                {
-                                    status: "completed",
-                                    verified: true,
-                                    points: 0,
-                                    verifiedAt:
-                                        serverTimestamp()
-                                }
-                            );
+                            await runTransaction(db, async (transaction) => {
+
+    const completionRef =
+        doc(
+            db,
+            "surveyCompletions",
+            completionSnapshot.id
+        );
+
+    const completionSnap =
+        await transaction.get(completionRef);
+
+    if (!completionSnap.exists()) {
+        throw new Error(
+            "Completion record no longer exists."
+        );
+    }
+
+    const completionData =
+        completionSnap.data();
+
+    if (completionData.status !== "pending") {
+        throw new Error(
+            "This completion has already been processed."
+        );
+    }
+
+    const surveyRef =
+        doc(
+            db,
+            "surveys",
+            completionData.surveyId
+        );
+
+    const userRef =
+        doc(
+            db,
+            "users",
+            completionData.userId
+        );
+
+    const surveySnap =
+        await transaction.get(surveyRef);
+
+    const userSnap =
+        await transaction.get(userRef);
+
+    if (!surveySnap.exists()) {
+        throw new Error(
+            "Survey no longer exists."
+        );
+    }
+
+    if (!userSnap.exists()) {
+        throw new Error(
+            "User profile not found."
+        );
+    }
+
+    const rewardPoints =
+        Number(
+            surveySnap.data().points || 0
+        );
+
+    if (rewardPoints <= 0) {
+        throw new Error(
+            "Survey reward is invalid."
+        );
+    }
+
+    const currentPoints =
+        Number(
+            userSnap.data().points || 0
+        );
+
+    const newPoints =
+        currentPoints + rewardPoints;
+
+    transaction.update(
+        completionRef,
+        {
+            status: "completed",
+            verified: true,
+            points: rewardPoints,
+            verifiedAt: serverTimestamp()
+        }
+    );
+
+    transaction.update(
+        userRef,
+        {
+            points: newPoints
+        }
+    );
+});
 
 
                             alert(
