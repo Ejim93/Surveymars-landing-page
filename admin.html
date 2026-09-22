@@ -884,11 +884,17 @@ async function loadPendingCompletions() {
 
                         } catch (error) {
 
-                            console.error(error);
+    console.error(
+        "VERIFICATION ERROR:",
+        error
+    );
 
-                            alert(
-                                "Unable to verify completion."
-                            );
+    alert(
+        "Unable to verify completion: " +
+        (error.code || error.message)
+    );
+
+}
 
                         }
 
