@@ -469,9 +469,9 @@ opacity: 1;
                     summaries and project insights.
                 </p>
 
-                <button disabled>
-                    Coming Soon
-                </button>
+                <button type="submit">
+    Submit Research Project
+</button>
 
             </div>
 
@@ -584,9 +584,9 @@ opacity: 1;
     >
 
     <p>
-        This is a preview form. Your project
-        details will not be submitted or saved yet.
-    </p>
+    Your project details will be securely submitted
+    to SurveyMars for review.
+</p>
 
     <button type="button" disabled>
         Submission Coming Soon
@@ -624,7 +624,10 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 import {
-    getFirestore
+    getFirestore,
+    collection,
+    addDoc,
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
@@ -650,6 +653,105 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 const db = getFirestore(app);
+
+
+// ==========================================
+// RESEARCH PROJECT SUBMISSION
+// ==========================================
+
+const researchProjectForm =
+    document.getElementById("researchProjectForm");
+
+researchProjectForm.addEventListener(
+    "submit",
+    async (event) => {
+
+        event.preventDefault();
+
+        const user = auth.currentUser;
+
+        if (!user) {
+            alert("Please log in before submitting a project.");
+            return;
+        }
+
+        const projectTitle =
+            document.getElementById("projectTitle").value.trim();
+
+        const researchObjectives =
+            document.getElementById("researchObjectives").value.trim();
+
+        const targetAudience =
+            document.getElementById("targetAudience").value.trim();
+
+        const targetLocation =
+            document.getElementById("targetLocation").value.trim();
+
+        const respondentCount =
+            Number(document.getElementById("respondentCount").value);
+
+        const clientEmail =
+            document.getElementById("clientEmail").value.trim();
+
+        if (
+            !projectTitle ||
+            !researchObjectives ||
+            !targetAudience ||
+            !targetLocation ||
+            !clientEmail ||
+            respondentCount < 1
+        ) {
+            alert("Please complete all fields correctly.");
+            return;
+        }
+
+        const submitButton =
+            researchProjectForm.querySelector("button[type='submit']");
+
+        submitButton.disabled = true;
+        submitButton.textContent = "Submitting...";
+
+        try {
+
+            await addDoc(
+                collection(db, "researchProjects"),
+                {
+                    clientUid: user.uid,
+                    projectTitle: projectTitle,
+                    researchObjectives: researchObjectives,
+                    targetAudience: targetAudience,
+                    targetLocation: targetLocation,
+                    respondentCount: respondentCount,
+                    clientEmail: clientEmail,
+                    status: "pending",
+                    submittedAt: serverTimestamp()
+                }
+            );
+
+            alert("Project submitted successfully! SurveyMars will review your request.");
+
+            researchProjectForm.reset();
+
+            document.getElementById("projectForm").style.display = "none";
+
+        } catch (error) {
+
+            console.error("PROJECT SUBMISSION ERROR:", error);
+
+            alert(
+                "Unable to submit project: " +
+                (error.code || error.message)
+            );
+
+        } finally {
+
+            submitButton.disabled = false;
+            submitButton.textContent = "Submit Research Project";
+
+        }
+
+    }
+);
 
 
 console.log("SurveyMars Researcher Portal Firebase initialized.");
