@@ -1393,6 +1393,8 @@ if (
 
     rewardBalance.textContent =
         points;
+    statusMessage.textContent =
+    "Points loaded from profile: " + points;
 
 
     if (
@@ -1416,10 +1418,14 @@ if (
 } else {
 
     pointsDisplay.textContent =
-        "0";
+    "—";
 
-    rewardBalance.textContent =
-        "0";
+rewardBalance.textContent =
+    "—";
+
+statusMessage.textContent =
+    "Points loading error: " +
+    (error.code || error.message);
 
     statusMessage.textContent =
         "Your SurveyMars profile could not be found.";
