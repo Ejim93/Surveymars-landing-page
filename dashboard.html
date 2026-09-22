@@ -1359,96 +1359,73 @@ welcomeMessage.textContent =
 
         try {
 
-            const userRef =
-    doc(
-        db,
-        "users",
-        user.uid
-    );
-
-
-const userSnapshot =
-    await getDoc(
-        userRef
-    );
-
-
-if (
-    userSnapshot.exists()
-) {
-
-    const userData =
-        userSnapshot.data();
-
-
-    const points =
-        Number(
-            userData.points || 0
+    const userRef =
+        doc(
+            db,
+            "users",
+            user.uid
         );
 
-
-    pointsDisplay.textContent =
-        points;
-
-
-    rewardBalance.textContent =
-        points;
-    statusMessage.textContent =
-    "Points loaded from profile: " + points;
+    const userSnapshot =
+        await getDoc(userRef);
 
 
-    if (
-        userData.status === "active"
-    ) {
+    if (userSnapshot.exists()) {
+
+        const userData =
+            userSnapshot.data();
+
+        const points =
+            Number(userData.points ?? 0);
+
+
+        pointsDisplay.textContent =
+            String(points);
+
+        rewardBalance.textContent =
+            String(points);
+
 
         statusMessage.textContent =
-            "Your SurveyMars account is active.";
+            "Points loaded from profile: " +
+            points +
+            " | Account status: " +
+            (userData.status || "unknown");
+
 
     } else {
 
+        pointsDisplay.textContent =
+            "—";
+
+        rewardBalance.textContent =
+            "—";
+
         statusMessage.textContent =
-            "Your account status is: " +
-            (
-                userData.status ||
-                "unknown"
-            );
+            "Profile not found for UID: " +
+            user.uid;
 
     }
 
-} else {
+
+} catch (error) {
+
+    console.error(
+        "POINTS ERROR:",
+        error
+    );
 
     pointsDisplay.textContent =
-    "—";
+        "—";
 
-rewardBalance.textContent =
-    "—";
-
-statusMessage.textContent =
-    "Points loading error: " +
-    (error.code || error.message);
+    rewardBalance.textContent =
+        "—";
 
     statusMessage.textContent =
-        "Your SurveyMars profile could not be found.";
+        "Points loading error: " +
+        (error.code || error.message);
 
 }
-
-        } catch (error) {
-
-            console.error(
-                "POINTS ERROR:",
-                error
-            );
-
-
-            pointsDisplay.textContent =
-                "0";
-
-
-            rewardBalance.textContent =
-                "0";
-
-        }
-
 
         // ======================================
         // LOAD SURVEYS
