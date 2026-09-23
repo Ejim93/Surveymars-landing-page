@@ -805,6 +805,7 @@ async function loadResearchProjects(user) {
                 const project = documentSnapshot.data();
 
                 
+ 
 const projectCard = document.createElement("div");
 projectCard.className = "panel";
 
@@ -914,7 +915,6 @@ projectCard.appendChild(detailsPanel);
 
 // ADD CARD TO PROJECT LIST
 projectsList.appendChild(projectCard);
-
 
         // Apply filter when dropdown changes
         statusFilter.onchange = displayFilteredProjects;
