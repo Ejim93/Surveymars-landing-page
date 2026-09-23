@@ -804,46 +804,117 @@ async function loadResearchProjects(user) {
 
                 const project = documentSnapshot.data();
 
-                const projectCard = document.createElement("div");
-                projectCard.className = "panel";
+                
+const projectCard = document.createElement("div");
+projectCard.className = "panel";
 
-                const title = document.createElement("h3");
-                title.textContent =
-                    project.projectTitle || "Untitled Project";
+// PROJECT TITLE
+const title = document.createElement("h3");
+title.textContent =
+    project.projectTitle || "Untitled Project";
 
-                const status = document.createElement("p");
-                status.textContent =
-                    "Status: " + (project.status || "pending");
+// PROJECT STATUS
+const status = document.createElement("p");
+status.textContent =
+    "Status: " + (project.status || "pending");
 
-                const location = document.createElement("p");
-                location.textContent =
-                    "Location: " +
-                    (project.targetLocation || "Not specified");
+// PROJECT LOCATION
+const location = document.createElement("p");
+location.textContent =
+    "Location: " +
+    (project.targetLocation || "Not specified");
 
-                const respondents = document.createElement("p");
-                respondents.textContent =
-                    "Estimated Respondents: " +
-                    (project.respondentCount || "Not specified");
+// RESPONDENT COUNT
+const respondents = document.createElement("p");
+respondents.textContent =
+    "Estimated Respondents: " +
+    (project.respondentCount || "Not specified");
 
-                const submitted = document.createElement("p");
+// SUBMISSION DATE
+const submitted = document.createElement("p");
 
-                if (project.submittedAt) {
-                    submitted.textContent =
-                        "Submitted: " +
-                        project.submittedAt.toDate()
-                            .toLocaleDateString();
-                }
+if (project.submittedAt) {
+    submitted.textContent =
+        "Submitted: " +
+        project.submittedAt.toDate()
+            .toLocaleDateString();
+}
 
-                projectCard.appendChild(title);
-                projectCard.appendChild(status);
-                projectCard.appendChild(location);
-                projectCard.appendChild(respondents);
-                projectCard.appendChild(submitted);
+// VIEW DETAILS BUTTON
+const detailsButton = document.createElement("button");
 
-                projectsList.appendChild(projectCard);
+detailsButton.type = "button";
+detailsButton.textContent = "View Details";
 
-            });
-        }
+detailsButton.style.padding = "10px 16px";
+detailsButton.style.marginTop = "10px";
+detailsButton.style.background = "#ff9800";
+detailsButton.style.color = "white";
+detailsButton.style.border = "none";
+detailsButton.style.borderRadius = "6px";
+detailsButton.style.cursor = "pointer";
+
+// FULL PROJECT DETAILS PANEL
+const detailsPanel = document.createElement("div");
+
+detailsPanel.style.display = "none";
+detailsPanel.style.marginTop = "15px";
+detailsPanel.style.padding = "12px";
+detailsPanel.style.borderTop = "1px solid #ddd";
+
+// PROJECT OBJECTIVES
+const objectives = document.createElement("p");
+objectives.textContent =
+    "Research Objectives: " +
+    (project.researchObjectives || "Not provided");
+
+// TARGET AUDIENCE
+const audience = document.createElement("p");
+audience.textContent =
+    "Target Audience: " +
+    (project.targetAudience || "Not specified");
+
+// CLIENT EMAIL
+const email = document.createElement("p");
+email.textContent =
+    "Client Email: " +
+    (project.clientEmail || "Not provided");
+
+// ADD DETAILS TO PANEL
+detailsPanel.appendChild(objectives);
+detailsPanel.appendChild(audience);
+detailsPanel.appendChild(email);
+
+// TOGGLE DETAILS VISIBILITY
+detailsButton.addEventListener("click", () => {
+
+    if (detailsPanel.style.display === "none") {
+
+        detailsPanel.style.display = "block";
+        detailsButton.textContent = "Hide Details";
+
+    } else {
+
+        detailsPanel.style.display = "none";
+        detailsButton.textContent = "View Details";
+
+    }
+
+});
+
+// ADD CONTENT TO PROJECT CARD
+projectCard.appendChild(title);
+projectCard.appendChild(status);
+projectCard.appendChild(location);
+projectCard.appendChild(respondents);
+projectCard.appendChild(submitted);
+
+projectCard.appendChild(detailsButton);
+projectCard.appendChild(detailsPanel);
+
+// ADD CARD TO PROJECT LIST
+projectsList.appendChild(projectCard);
+
 
         // Apply filter when dropdown changes
         statusFilter.onchange = displayFilteredProjects;
