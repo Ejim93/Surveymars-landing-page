@@ -719,10 +719,14 @@ const db = getFirestore(app);
 // LOAD CLIENT RESEARCH PROJECTS
 // ==========================================
 
+
 async function loadResearchProjects(user) {
 
     const projectsList =
         document.getElementById("researchProjectsList");
+
+    const statusFilter =
+        document.getElementById("projectStatusFilter");
 
     projectsList.innerHTML = "<p>Loading your projects...</p>";
 
@@ -734,84 +738,118 @@ async function loadResearchProjects(user) {
         );
 
         const snapshot = await getDocs(projectsQuery);
+
         // Update Total Projects statistic
+        document.getElementById("totalProjectsCount").textContent =
+            snapshot.size;
 
-document.getElementById("totalProjectsCount").textContent =
-    snapshot.size;
         // Update Active Projects statistic
+        const activeProjects = snapshot.docs.filter((doc) => {
 
-const activeProjects = snapshot.docs.filter((doc) => {
+            const status = doc.data().status;
 
-    const status = doc.data().status;
-
-    return [
-        "approved",
-        "active",
-        "in_progress"
-    ].includes(status);
-
-});
-
-document.getElementById("activeProjectsCount").textContent =
-    activeProjects.length;
-
-        if (snapshot.empty) {
-
-            projectsList.innerHTML = `
-                <div class="empty-state">
-                    <div class="symbol">📋</div>
-
-                    <strong>No research projects yet</strong>
-
-                    <p>
-                        Your submitted research projects
-                        will appear here.
-                    </p>
-                </div>
-            `;
-
-            return;
-        }
-
-        projectsList.innerHTML = "";
-
-        snapshot.forEach((documentSnapshot) => {
-
-            const project = documentSnapshot.data();
-
-            const projectCard = document.createElement("div");
-
-            projectCard.className = "panel";
-
-            const title = document.createElement("h3");
-            title.textContent = project.projectTitle || "Untitled Project";
-
-            const status = document.createElement("p");
-            status.textContent = "Status: " + (project.status || "pending");
-
-            const location = document.createElement("p");
-            location.textContent = "Location: " + (project.targetLocation || "Not specified");
-
-            const respondents = document.createElement("p");
-            respondents.textContent = "Estimated Respondents: " + (project.respondentCount || "Not specified");
-
-            const submitted = document.createElement("p");
-
-            if (project.submittedAt) {
-                submitted.textContent =
-                    "Submitted: " +
-                    project.submittedAt.toDate().toLocaleDateString();
-            }
-
-            projectCard.appendChild(title);
-            projectCard.appendChild(status);
-            projectCard.appendChild(location);
-            projectCard.appendChild(respondents);
-            projectCard.appendChild(submitted);
-
-            projectsList.appendChild(projectCard);
+            return [
+                "approved",
+                "active",
+                "in_progress"
+            ].includes(status);
 
         });
+
+        document.getElementById("activeProjectsCount").textContent =
+            activeProjects.length;
+
+        // Keep all client projects in memory
+        const clientProjects = snapshot.docs;
+
+        // Display projects based on selected status
+        function displayFilteredProjects() {
+
+            const selectedStatus = statusFilter.value;
+
+            const filteredProjects = clientProjects.filter((doc) => {
+
+                const project = doc.data();
+                const projectStatus = project.status || "pending";
+
+                if (selectedStatus === "all") {
+                    return true;
+                }
+
+                return projectStatus === selectedStatus;
+
+            });
+
+            // Show message if no projects match
+            if (filteredProjects.length === 0) {
+
+                projectsList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="symbol">📋</div>
+
+                        <strong>No projects found</strong>
+
+                        <p>
+                            No projects match the selected status.
+                        </p>
+                    </div>
+                `;
+
+                return;
+            }
+
+            projectsList.innerHTML = "";
+
+            filteredProjects.forEach((documentSnapshot) => {
+
+                const project = documentSnapshot.data();
+
+                const projectCard = document.createElement("div");
+                projectCard.className = "panel";
+
+                const title = document.createElement("h3");
+                title.textContent =
+                    project.projectTitle || "Untitled Project";
+
+                const status = document.createElement("p");
+                status.textContent =
+                    "Status: " + (project.status || "pending");
+
+                const location = document.createElement("p");
+                location.textContent =
+                    "Location: " +
+                    (project.targetLocation || "Not specified");
+
+                const respondents = document.createElement("p");
+                respondents.textContent =
+                    "Estimated Respondents: " +
+                    (project.respondentCount || "Not specified");
+
+                const submitted = document.createElement("p");
+
+                if (project.submittedAt) {
+                    submitted.textContent =
+                        "Submitted: " +
+                        project.submittedAt.toDate()
+                            .toLocaleDateString();
+                }
+
+                projectCard.appendChild(title);
+                projectCard.appendChild(status);
+                projectCard.appendChild(location);
+                projectCard.appendChild(respondents);
+                projectCard.appendChild(submitted);
+
+                projectsList.appendChild(projectCard);
+
+            });
+        }
+
+        // Apply filter when dropdown changes
+        statusFilter.onchange = displayFilteredProjects;
+
+        // Display initial results
+        displayFilteredProjects();
 
     } catch (error) {
 
