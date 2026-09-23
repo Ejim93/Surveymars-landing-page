@@ -667,16 +667,109 @@ onAuthStateChanged(auth, (user) => {
 
     } else {
 
-        console.log(
-            "Research client logged in:",
-            user.uid
-        );
+    console.log(
+        "Research client logged in:",
+        user.uid
+    );
 
-    }
+    loadResearchProjects(user);
+
+}
 
 });
 
 const db = getFirestore(app);
+
+        // ==========================================
+// LOAD CLIENT RESEARCH PROJECTS
+// ==========================================
+
+async function loadResearchProjects(user) {
+
+    const projectsList =
+        document.getElementById("researchProjectsList");
+
+    projectsList.innerHTML = "<p>Loading your projects...</p>";
+
+    try {
+
+        const projectsQuery = query(
+            collection(db, "researchProjects"),
+            where("clientUid", "==", user.uid),
+            orderBy("submittedAt", "desc")
+        );
+
+        const snapshot = await getDocs(projectsQuery);
+
+        if (snapshot.empty) {
+
+            projectsList.innerHTML = `
+                <div class="empty-state">
+                    <div class="symbol">📋</div>
+
+                    <strong>No research projects yet</strong>
+
+                    <p>
+                        Your submitted research projects
+                        will appear here.
+                    </p>
+                </div>
+            `;
+
+            return;
+        }
+
+        projectsList.innerHTML = "";
+
+        snapshot.forEach((documentSnapshot) => {
+
+            const project = documentSnapshot.data();
+
+            const projectCard = document.createElement("div");
+
+            projectCard.className = "panel";
+
+            const title = document.createElement("h3");
+            title.textContent = project.projectTitle || "Untitled Project";
+
+            const status = document.createElement("p");
+            status.textContent = "Status: " + (project.status || "pending");
+
+            const location = document.createElement("p");
+            location.textContent = "Location: " + (project.targetLocation || "Not specified");
+
+            const respondents = document.createElement("p");
+            respondents.textContent = "Estimated Respondents: " + (project.respondentCount || "Not specified");
+
+            const submitted = document.createElement("p");
+
+            if (project.submittedAt) {
+                submitted.textContent =
+                    "Submitted: " +
+                    project.submittedAt.toDate().toLocaleDateString();
+            }
+
+            projectCard.appendChild(title);
+            projectCard.appendChild(status);
+            projectCard.appendChild(location);
+            projectCard.appendChild(respondents);
+            projectCard.appendChild(submitted);
+
+            projectsList.appendChild(projectCard);
+
+        });
+
+    } catch (error) {
+
+        console.error("LOAD PROJECTS ERROR:", error);
+
+        projectsList.innerHTML =
+            "<p>Unable to load projects: " +
+            (error.code || error.message) +
+            "</p>";
+
+    }
+}
 
 
 // ==========================================
