@@ -629,7 +629,6 @@ import {
     query,
     where,
     getDocs,
-    orderBy
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
@@ -695,8 +694,7 @@ async function loadResearchProjects(user) {
 
         const projectsQuery = query(
             collection(db, "researchProjects"),
-            where("clientUid", "==", user.uid),
-            orderBy("submittedAt", "desc")
+            where("clientUid", "==", user.uid)
         );
 
         const snapshot = await getDocs(projectsQuery);
