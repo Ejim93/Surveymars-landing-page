@@ -408,28 +408,64 @@ opacity: 1;
         
 
 
-               <section class="panel">
+               
+<section class="panel">
 
-            <h3>Project Workspace</h3>
+    <h3>Project Workspace</h3>
 
-            <div id="researchProjectsList">
+    <!-- PROJECT STATUS FILTERS -->
+    <div class="project-filters" style="margin-bottom: 18px;">
 
-                <div class="empty-state">
+        <label for="projectStatusFilter">
+            Filter Projects by Status
+        </label>
 
-                    <div class="symbol">📋</div>
+        <select
+            id="projectStatusFilter"
+            style="
+                display: block;
+                width: 100%;
+                max-width: 350px;
+                padding: 12px;
+                margin-top: 8px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                background: white;
+                font-size: 15px;
+            "
+        >
+            <option value="all">All Projects</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="active">Active</option>
+            <option value="in_progress">In Progress</option>
+            <option value="completed">Completed</option>
+            <option value="rejected">Rejected</option>
+        </select>
 
-                    <strong>Loading Your Research Projects...</strong>
+    </div>
 
-                    <p>
-                        Your submitted research projects
-                        will appear here.
-                    </p>
+    <!-- PROJECT LIST -->
+    <div id="researchProjectsList">
 
-                </div>
+        <div class="empty-state">
 
-            </div>
+            <div class="symbol">📋</div>
 
-        </section> 
+            <strong>Loading Your Research Projects...</strong>
+
+            <p>
+                Your submitted research projects
+                will appear here.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
 
 
         <h2 class="section-title">
