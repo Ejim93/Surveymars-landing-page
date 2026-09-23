@@ -620,9 +620,9 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
 import {
-    getAuth
+    getAuth,
+    onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
 import {
     getFirestore,
     collection,
@@ -651,6 +651,28 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
+        // ==========================================
+// CHECK CLIENT LOGIN
+// ==========================================
+
+onAuthStateChanged(auth, (user) => {
+
+    if (!user) {
+
+        alert("Please log in to access the Research Client Portal.");
+
+        window.location.href = "login.html";
+
+    } else {
+
+        console.log(
+            "Research client logged in:",
+            user.uid
+        );
+
+    }
+
+});
 
 const db = getFirestore(app);
 
