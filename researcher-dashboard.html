@@ -702,6 +702,22 @@ async function loadResearchProjects(user) {
 
 document.getElementById("totalProjectsCount").textContent =
     snapshot.size;
+        // Update Active Projects statistic
+
+const activeProjects = snapshot.docs.filter((doc) => {
+
+    const status = doc.data().status;
+
+    return [
+        "approved",
+        "active",
+        "in_progress"
+    ].includes(status);
+
+});
+
+document.getElementById("activeProjectsCount").textContent =
+    activeProjects.length;
 
         if (snapshot.empty) {
 
