@@ -924,24 +924,23 @@ async function loadPendingCompletions() {
                             await loadPendingCompletions();
 
 
+                        
                         } catch (error) {
 
-    console.error(
-        "VERIFICATION ERROR:",
-        error
-    );
+                            console.error(
+                                "VERIFICATION ERROR:",
+                                error
+                            );
 
-    alert(
-        "Unable to verify completion: " +
-        (error.code || error.message)
-    );
-
-}
+                            alert(
+                                "Unable to verify completion: " +
+                                (error.code || error.message)
+                            );
 
                         }
-
                     }
                 );
+
 
 
                 card.appendChild(user);
