@@ -580,9 +580,85 @@ opacity: 1;
         required
     >
 
-    <label for="targetLocation">
-        Target Location
-    </label>
+    
+<label for="targetCountry">
+    Primary Target Country *
+</label>
+
+<input
+    type="text"
+    id="targetCountry"
+    name="targetCountry"
+    list="countrySuggestions"
+    placeholder="e.g. Nigeria, Ghana, United Kingdom"
+    autocomplete="off"
+    required
+>
+
+<datalist id="countrySuggestions">
+    <option value="Nigeria">
+    <option value="Ghana">
+    <option value="Kenya">
+    <option value="South Africa">
+    <option value="United States">
+    <option value="United Kingdom">
+    <option value="Canada">
+    <option value="India">
+    <option value="Australia">
+    <option value="Germany">
+    <option value="France">
+    <option value="Brazil">
+</datalist>
+
+<label for="targetRegion">
+    State, Province or Region
+</label>
+
+<input
+    type="text"
+    id="targetRegion"
+    name="targetRegion"
+    placeholder="e.g. Rivers State, Ontario or Greater London"
+>
+
+<label for="targetCity">
+    City, Town or Area
+</label>
+
+<input
+    type="text"
+    id="targetCity"
+    name="targetCity"
+    placeholder="e.g. Port Harcourt, Toronto or London"
+>
+
+<label for="researchCoverage">
+    Research Coverage *
+</label>
+
+<select
+    id="researchCoverage"
+    name="researchCoverage"
+    required
+>
+    <option value="">Select research coverage</option>
+    <option value="City or region">Specific city or region</option>
+    <option value="Multiple regions">Multiple regions</option>
+    <option value="Nationwide">Nationwide</option>
+    <option value="International">International / multiple countries</option>
+</select>
+
+<label for="additionalCountries">
+    Additional Target Countries
+</label>
+
+<textarea
+    id="additionalCountries"
+    name="additionalCountries"
+    rows="3"
+    placeholder="Optional: Enter other countries, separated by commas"
+></textarea>
+
 
     <input
         type="text"
