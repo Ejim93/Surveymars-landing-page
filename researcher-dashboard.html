@@ -296,7 +296,8 @@ opacity: 1;
 }
 
 #researchProjectForm input,
-#researchProjectForm textarea {
+#researchProjectForm textarea,
+#researchProjectForm select {
     width: 100%;
     box-sizing: border-box;
     padding: 12px;
@@ -308,7 +309,8 @@ opacity: 1;
 }
 
 #researchProjectForm input:focus,
-#researchProjectForm textarea:focus {
+#researchProjectForm textarea:focus,
+#researchProjectForm select:focus {
     outline: none;
     border-color: #ff9800;
     box-shadow: 0 0 0 2px rgba(255, 152, 0, 0.15);
@@ -1044,8 +1046,36 @@ researchProjectForm.addEventListener(
         const targetAudience =
             document.getElementById("targetAudience").value.trim();
 
-        const targetLocation =
-            document.getElementById("targetLocation").value.trim();
+        
+const targetCountry =
+    document.getElementById("targetCountry").value.trim();
+
+const targetRegion =
+    document.getElementById("targetRegion").value.trim();
+
+const targetCity =
+    document.getElementById("targetCity").value.trim();
+
+const researchCoverage =
+    document.getElementById("researchCoverage").value;
+
+const additionalCountries =
+    document.getElementById("additionalCountries").value
+        .split(",")
+        .map(country => country.trim())
+        .filter(Boolean);
+
+// Keep the existing targetLocation field for compatibility
+// with project cards and older project records.
+const targetLocation = [
+    targetCity,
+    targetRegion,
+    targetCountry,
+    additionalCountries.length
+        ? "Additional countries: " + additionalCountries.join(", ")
+        : ""
+].filter(Boolean).join(", ");
+
 
         const respondentCount =
             Number(document.getElementById("respondentCount").value);
@@ -1053,17 +1083,21 @@ researchProjectForm.addEventListener(
         const clientEmail =
             document.getElementById("clientEmail").value.trim();
 
-        if (
-            !projectTitle ||
-            !researchObjectives ||
-            !targetAudience ||
-            !targetLocation ||
-            !clientEmail ||
-            respondentCount < 1
-        ) {
-            alert("Please complete all fields correctly.");
-            return;
-        }
+         
+if (
+    !projectTitle ||
+    !researchObjectives ||
+    !targetAudience ||
+    !targetCountry ||
+    !researchCoverage ||
+    !clientEmail ||
+    respondentCount < 1 ||
+    !Number.isFinite(respondentCount)
+) {
+    alert("Please complete all required fields correctly.");
+    return;
+}
+
 
         const submitButton =
             researchProjectForm.querySelector("button[type='submit']");
@@ -1080,7 +1114,14 @@ researchProjectForm.addEventListener(
                     projectTitle: projectTitle,
                     researchObjectives: researchObjectives,
                     targetAudience: targetAudience,
-                    targetLocation: targetLocation,
+                    
+targetLocation: targetLocation,
+targetCountry: targetCountry,
+targetRegion: targetRegion,
+targetCity: targetCity,
+researchCoverage: researchCoverage,
+additionalCountries: additionalCountries,
+
                     respondentCount: respondentCount,
                     clientEmail: clientEmail,
                     status: "pending",
