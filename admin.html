@@ -160,6 +160,31 @@
 
 </div>
 
+<!-- RESEARCH PROJECT REVIEW -->
+
+<div class="dashboard-card">
+
+    <h2>🔎 Research Project Review</h2>
+
+    <p>
+        Review research requests submitted by business
+        clients and researchers.
+    </p>
+
+    <div id="researchProjectMessage"></div>
+
+    <div id="researchProjectList">
+        Loading research projects...
+    </div>
+
+    <button
+        type="button"
+        id="refreshResearchProjects">
+        Refresh Research Projects
+    </button>
+
+</div>
+
 
             <button id="logoutButton">
                 Log Out
@@ -257,6 +282,18 @@
         document.getElementById("surveyList");
     const pendingCompletions =
     document.getElementById("pendingCompletions");
+    // ==============================
+// RESEARCH PROJECT REVIEW
+// ==============================
+
+const researchProjectList =
+    document.getElementById("researchProjectList");
+
+const researchProjectMessage =
+    document.getElementById("researchProjectMessage");
+
+const refreshResearchProjects =
+    document.getElementById("refreshResearchProjects");
 
     const logoutButton =
         document.getElementById("logoutButton");
