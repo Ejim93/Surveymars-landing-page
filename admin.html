@@ -1107,6 +1107,143 @@ async function loadConsumerPulseResponses() {
     }
 
 }
+    
+function addResearchProjectDetail(card, label, value) {
+    const paragraph = document.createElement("p");
+    const strong = document.createElement("strong");
+
+    strong.textContent = label + ": ";
+    paragraph.appendChild(strong);
+
+    let displayValue = "Not provided";
+
+    if (Array.isArray(value)) {
+        displayValue = value.length
+            ? value.join(", ")
+            : "Not provided";
+    } else if (
+        value !== undefined &&
+        value !== null &&
+        value !== ""
+    ) {
+        displayValue = String(value);
+    }
+
+    paragraph.appendChild(
+        document.createTextNode(displayValue)
+    );
+
+    card.appendChild(paragraph);
+}
+
+async function loadResearchProjects() {
+    try {
+        researchProjectMessage.textContent =
+            "Loading research projects...";
+
+        researchProjectList.textContent = "";
+
+        const snapshot = await getDocs(
+            collection(db, "researchProjects")
+        );
+
+        if (snapshot.empty) {
+            researchProjectList.textContent =
+                "No research projects submitted yet.";
+
+            researchProjectMessage.textContent = "";
+            return;
+        }
+
+        let pendingCount = 0;
+
+        snapshot.forEach((projectSnapshot) => {
+            const project = projectSnapshot.data();
+
+            const card = document.createElement("div");
+            card.className = "dashboard-card";
+
+            const title = document.createElement("h3");
+            title.textContent =
+                project.projectTitle || "Untitled project";
+
+            card.appendChild(title);
+
+            addResearchProjectDetail(
+                card, "Status", project.status
+            );
+
+            addResearchProjectDetail(
+                card, "Client ID", project.clientUid
+            );
+
+            addResearchProjectDetail(
+                card, "Client Email", project.clientEmail
+            );
+
+            addResearchProjectDetail(
+                card, "Country", project.targetCountry
+            );
+
+            addResearchProjectDetail(
+                card, "Region / State", project.targetRegion
+            );
+
+            addResearchProjectDetail(
+                card, "City", project.targetCity
+            );
+
+            addResearchProjectDetail(
+                card, "Research Coverage", project.researchCoverage
+            );
+
+            addResearchProjectDetail(
+                card, "Additional Countries",
+                project.additionalCountries
+            );
+
+            addResearchProjectDetail(
+                card, "Target Location", project.targetLocation
+            );
+
+            addResearchProjectDetail(
+                card, "Target Audience", project.targetAudience
+            );
+
+            addResearchProjectDetail(
+                card, "Respondents Requested",
+                project.respondentCount
+            );
+
+            addResearchProjectDetail(
+                card, "Research Objectives",
+                project.researchObjectives
+            );
+
+            if (project.status === "pending") {
+                pendingCount++;
+            }
+
+            researchProjectList.appendChild(card);
+        });
+
+        researchProjectMessage.textContent =
+            pendingCount +
+            " pending project(s) awaiting review.";
+
+    } catch (error) {
+        console.error(
+            "RESEARCH PROJECTS ERROR:", error
+        );
+
+        researchProjectMessage.textContent =
+            "Unable to load projects. Error: " +
+            (error.code || error.message);
+
+        researchProjectList.textContent = "";
+    }
+}
+
 </script>
 
 </body>
