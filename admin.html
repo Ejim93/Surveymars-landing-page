@@ -294,6 +294,10 @@ const researchProjectMessage =
 
 const refreshResearchProjects =
     document.getElementById("refreshResearchProjects");
+    refreshResearchProjects.addEventListener(
+    "click",
+    loadResearchProjects
+);
 
     const logoutButton =
         document.getElementById("logoutButton");
@@ -1221,9 +1225,61 @@ async function loadResearchProjects() {
                 project.researchObjectives
             );
 
-            if (project.status === "pending") {
-                pendingCount++;
-            }
+            
+if (project.status === "pending") {
+    pendingCount++;
+
+    const buttonContainer = document.createElement("div");
+
+    buttonContainer.style.display = "flex";
+    buttonContainer.style.gap = "10px";
+    buttonContainer.style.flexWrap = "wrap";
+    buttonContainer.style.marginTop = "15px";
+
+    const approveButton = document.createElement("button");
+    approveButton.type = "button";
+    approveButton.textContent = "Approve Project";
+    approveButton.style.backgroundColor = "#2e7d32";
+    approveButton.style.color = "#ffffff";
+
+    approveButton.addEventListener("click", async () => {
+        approveButton.disabled = true;
+
+        try {
+            await updateResearchProjectStatus(
+                projectSnapshot.id,
+                "approved"
+            );
+        } finally {
+            approveButton.disabled = false;
+        }
+    });
+
+    const rejectButton = document.createElement("button");
+    rejectButton.type = "button";
+    rejectButton.textContent = "Reject Project";
+    rejectButton.style.backgroundColor = "#c62828";
+    rejectButton.style.color = "#ffffff";
+
+    rejectButton.addEventListener("click", async () => {
+        rejectButton.disabled = true;
+
+        try {
+            await updateResearchProjectStatus(
+                projectSnapshot.id,
+                "rejected"
+            );
+        } finally {
+            rejectButton.disabled = false;
+        }
+    });
+
+    buttonContainer.appendChild(approveButton);
+    buttonContainer.appendChild(rejectButton);
+
+    card.appendChild(buttonContainer);
+}
+
 
             researchProjectList.appendChild(card);
         });
@@ -1242,6 +1298,51 @@ async function loadResearchProjects() {
             (error.code || error.message);
 
         researchProjectList.textContent = "";
+    }
+}
+
+async function updateResearchProjectStatus(projectId, newStatus) {
+    if (newStatus !== "approved" && newStatus !== "rejected") {
+        return;
+    }
+
+    const action = newStatus === "approved"
+        ? "approve"
+        : "reject";
+
+    const confirmed = confirm(
+        "Are you sure you want to " + action +
+        " this research project?"
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+        researchProjectMessage.textContent =
+            "Updating project status...";
+
+        await updateDoc(
+            doc(db, "researchProjects", projectId),
+            {
+                status: newStatus
+            }
+        );
+
+        researchProjectMessage.textContent =
+            "Project status updated successfully.";
+
+        await loadResearchProjects();
+
+    } catch (error) {
+        console.error(
+            "UPDATE RESEARCH PROJECT ERROR:", error
+        );
+
+        researchProjectMessage.textContent =
+            "Could not update project: " +
+            (error.code || error.message);
     }
 }
 
