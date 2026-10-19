@@ -537,7 +537,7 @@ opacity: 1;
         style="display: none; margin: 25px auto;"
     >
 
-        <h2>Submit a Research Project</h2>
+        <h2 id="projectFormTitle">Submit a Research Project</h2>
 
         <p>
             Tell SurveyMars about your research needs.
@@ -700,7 +700,7 @@ opacity: 1;
     to SurveyMars for review.
 </p>
 
-    <button type="submit">
+    <button type="submit" id="projectSubmitButton">
     Submit Research Project
 </button>
 
@@ -959,7 +959,7 @@ audience.textContent =
     "Target Audience: " +
     (project.targetAudience || "Not specified");
 
-// CLIENT EMAIL
+no// CLIENT EMAIL
 const email = document.createElement("p");
 email.textContent =
     "Client Email: " +
