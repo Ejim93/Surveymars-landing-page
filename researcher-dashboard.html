@@ -1023,9 +1023,28 @@ if (currentStatus === "rejected") {
     detailsPanel.appendChild(progressList);
 }
 
+
 detailsPanel.appendChild(objectives);
 detailsPanel.appendChild(audience);
 detailsPanel.appendChild(email);
+
+// ADMINISTRATOR FEEDBACK
+const feedbackTitle = document.createElement("h4");
+feedbackTitle.textContent = "Administrator Feedback";
+detailsPanel.appendChild(feedbackTitle);
+
+const feedbackMessage = document.createElement("p");
+feedbackMessage.textContent =
+    project.adminFeedback ||
+    "No feedback from the administrator yet.";
+
+feedbackMessage.style.whiteSpace = "pre-wrap";
+feedbackMessage.style.padding = "10px";
+feedbackMessage.style.background = "#fff3e0";
+feedbackMessage.style.borderRadius = "6px";
+
+detailsPanel.appendChild(feedbackMessage);
+
 
 // TOGGLE DETAILS VISIBILITY
 detailsButton.addEventListener("click", () => {
