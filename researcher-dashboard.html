@@ -488,7 +488,7 @@ opacity: 1;
 
                 <button
     type="button"
-    onclick="document.getElementById('projectForm').style.display = 'block';"
+    onclick="editingProjectId = null; document.getElementById('researchProjectForm').reset(); document.getElementById('projectFormTitle').textContent = 'Submit a Research Project'; document.getElementById('projectSubmitButton').textContent = 'Submit Research Project'; document.getElementById('projectForm').style.display = 'block';"
 >
     Submit Project
 </button>
