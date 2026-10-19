@@ -1,4 +1,4 @@
-21
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -816,6 +816,7 @@ async function loadResearchProjects(user) {
         );
 
         const snapshot = await getDocs(projectsQuery);
+        console.log("SurveyMars project count:", snapshot.size);
 
         // Update Total Projects statistic
         document.getElementById("totalProjectsCount").textContent =
