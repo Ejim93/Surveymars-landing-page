@@ -1249,6 +1249,7 @@ async function loadResearchProjects() {
                 saveFeedbackButton.disabled = true;
                 researchProjectMessage.textContent =
                     "Saving administrator feedback...";
+                saveFeedbackButton.textContent = "Saving...";
 
                 try {
                     await updateDoc(
@@ -1261,6 +1262,7 @@ async function loadResearchProjects() {
 
                     researchProjectMessage.textContent =
                         "Administrator feedback saved successfully.";
+                    saveFeedbackButton.textContent = "Feedback Saved!";
 
                 } catch (error) {
                     console.error("SAVE FEEDBACK ERROR:", error);
@@ -1268,6 +1270,7 @@ async function loadResearchProjects() {
                     researchProjectMessage.textContent =
                         "Could not save feedback: " +
                         (error.code || error.message);
+                    saveFeedbackButton.textContent = "Save Failed - Retry";
 
                 } finally {
                     saveFeedbackButton.disabled = false;
