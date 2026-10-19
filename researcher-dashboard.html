@@ -1377,35 +1377,66 @@ if (
         submitButton.disabled = true;
         submitButton.textContent = "Submitting...";
 
-        try {
+        
+try {
 
-            await addDoc(
-                collection(db, "researchProjects"),
-                {
-                    clientUid: user.uid,
-                    projectTitle: projectTitle,
-                    researchObjectives: researchObjectives,
-                    targetAudience: targetAudience,
-                    
-targetLocation: targetLocation,
-targetCountry: targetCountry,
-targetRegion: targetRegion,
-targetCity: targetCity,
-researchCoverage: researchCoverage,
-additionalCountries: additionalCountries,
+    const projectData = {
+        clientUid: user.uid,
+        projectTitle: projectTitle,
+        researchObjectives: researchObjectives,
+        targetAudience: targetAudience,
 
-                    respondentCount: respondentCount,
-                    clientEmail: clientEmail,
-                    status: "pending",
-                    submittedAt: serverTimestamp()
-                }
-            );
+        targetLocation: targetLocation,
+        targetCountry: targetCountry,
+        targetRegion: targetRegion,
+        targetCity: targetCity,
+        researchCoverage: researchCoverage,
+        additionalCountries: additionalCountries,
 
-            alert("Project submitted successfully! SurveyMars will review your request.");
+        respondentCount: respondentCount,
+        clientEmail: clientEmail,
+        status: "pending",
+        submittedAt: serverTimestamp()
+    };
 
-            researchProjectForm.reset();
+    if (editingProjectId) {
 
-            document.getElementById("projectForm").style.display = "none";
+        // UPDATE AND RESUBMIT THE EXISTING REJECTED PROJECT
+        await updateDoc(
+            doc(db, "researchProjects", editingProjectId),
+            projectData
+        );
+
+        alert(
+            "Your corrected project has been resubmitted for SurveyMars review."
+        );
+
+    } else {
+
+        // CREATE A NEW RESEARCH PROJECT
+        await addDoc(
+            collection(db, "researchProjects"),
+            projectData
+        );
+
+        alert(
+            "Project submitted successfully! SurveyMars will review your request."
+        );
+
+    }
+
+    researchProjectForm.reset();
+
+    editingProjectId = null;
+
+    document.getElementById("projectForm").style.display = "none";
+
+    document.getElementById("projectFormTitle").textContent =
+        "Submit a Research Project";
+
+    document.getElementById("projectSubmitButton").textContent =
+        "Submit Research Project";
+
 
         } catch (error) {
 
@@ -1416,10 +1447,15 @@ additionalCountries: additionalCountries,
                 (error.code || error.message)
             );
 
-        } finally {
+        
+} finally {
 
-            submitButton.disabled = false;
-            submitButton.textContent = "Submit Research Project";
+    submitButton.disabled = false;
+
+    submitButton.textContent = editingProjectId
+        ? "Resubmit for Review"
+        : "Submit Research Project";
+
 
         }
 
