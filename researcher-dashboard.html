@@ -965,6 +965,64 @@ email.textContent =
     (project.clientEmail || "Not provided");
 
 // ADD DETAILS TO PANEL
+                
+ // PROJECT STATUS TRACKING
+const trackingTitle = document.createElement("h4");
+trackingTitle.textContent = "Project Progress";
+detailsPanel.appendChild(trackingTitle);
+
+const currentStatus = (project.status || "pending").toLowerCase();
+
+const statusMessages = {
+    pending: "Your project has been submitted and is awaiting administrator review.",
+    approved: "Your project has been approved. The next step is to begin the research work.",
+    active: "Your project is active.",
+    in_progress: "Research work is currently in progress.",
+    completed: "Your project has been marked as completed.",
+    rejected: "Your project was rejected. Please contact the administrator for clarification."
+};
+
+const trackingMessage = document.createElement("p");
+trackingMessage.textContent =
+    statusMessages[currentStatus] ||
+    "Current status: " + currentStatus;
+
+detailsPanel.appendChild(trackingMessage);
+
+// STATUS PROGRESS INDICATOR
+const progressSteps = [
+    { value: "pending", label: "Submitted" },
+    { value: "approved", label: "Approved" },
+    { value: "active", label: "Active" },
+    { value: "in_progress", label: "In Progress" },
+    { value: "completed", label: "Completed" }
+];
+
+if (currentStatus === "rejected") {
+    const rejectedLabel = document.createElement("p");
+    rejectedLabel.textContent = "Project status: Rejected";
+    rejectedLabel.style.color = "#c62828";
+    rejectedLabel.style.fontWeight = "bold";
+    detailsPanel.appendChild(rejectedLabel);
+} else {
+    const progressList = document.createElement("ol");
+
+    progressSteps.forEach((step) => {
+        const item = document.createElement("li");
+        item.textContent = step.label;
+
+        if (step.value === currentStatus) {
+            item.textContent += " — Current status";
+            item.style.fontWeight = "bold";
+            item.style.color = "#e68900";
+        }
+
+        progressList.appendChild(item);
+    });
+
+    detailsPanel.appendChild(progressList);
+}
+
 detailsPanel.appendChild(objectives);
 detailsPanel.appendChild(audience);
 detailsPanel.appendChild(email);
