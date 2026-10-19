@@ -1067,6 +1067,79 @@ detailsButton.addEventListener("click", () => {
 // ADD CONTENT TO PROJECT CARD
 projectCard.appendChild(title);
 projectCard.appendChild(status);
+                // EDIT AND RESUBMIT REJECTED PROJECTS ONLY
+if (normalizedStatus === "rejected") {
+
+    const editButton = document.createElement("button");
+
+    editButton.type = "button";
+    editButton.textContent = "Edit & Resubmit";
+
+    editButton.style.padding = "10px 16px";
+    editButton.style.marginTop = "10px";
+    editButton.style.marginRight = "10px";
+    editButton.style.background = "#17345c";
+    editButton.style.color = "white";
+    editButton.style.border = "none";
+    editButton.style.borderRadius = "6px";
+    editButton.style.cursor = "pointer";
+
+    editButton.addEventListener("click", () => {
+
+        editingProjectId = documentSnapshot.id;
+
+        document.getElementById("projectTitle").value =
+            project.projectTitle || "";
+
+        document.getElementById("researchObjectives").value =
+            project.researchObjectives || "";
+
+        document.getElementById("targetAudience").value =
+            project.targetAudience || "";
+
+        document.getElementById("targetCountry").value =
+            project.targetCountry || "";
+
+        document.getElementById("targetRegion").value =
+            project.targetRegion || "";
+
+        document.getElementById("targetCity").value =
+            project.targetCity || "";
+
+        document.getElementById("researchCoverage").value =
+            project.researchCoverage || "";
+
+        document.getElementById("additionalCountries").value =
+            Array.isArray(project.additionalCountries)
+                ? project.additionalCountries.join(", ")
+                : "";
+
+        document.getElementById("targetLocation").value =
+            project.targetLocation || "";
+
+        document.getElementById("respondentCount").value =
+            project.respondentCount || "";
+
+        document.getElementById("clientEmail").value =
+            project.clientEmail || "";
+
+        document.getElementById("projectFormTitle").textContent =
+            "Edit Rejected Research Project";
+
+        document.getElementById("projectSubmitButton").textContent =
+            "Resubmit for Review";
+
+        document.getElementById("projectForm").style.display = "block";
+
+        document.getElementById("projectForm").scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+    });
+
+    projectCard.appendChild(editButton);
+}
                 
 const normalizedStatus = String(
     project.status || "pending"
@@ -1216,6 +1289,9 @@ projectsList.appendChild(projectCard);
 // ==========================================
 // RESEARCH PROJECT SUBMISSION
 // ==========================================
+        // Stores the ID of a rejected project being edited.
+// Null means the client is submitting a new project.
+let editingProjectId = null;
 
 const researchProjectForm =
     document.getElementById("researchProjectForm");
