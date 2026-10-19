@@ -1072,9 +1072,11 @@ projectCard.appendChild(submitted);
                 
  // ADMINISTRATOR FEEDBACK NOTIFICATION
 if (
-    project.adminFeedback &&
-    project.adminFeedback.trim() !== ""
-) {
+    typeof project.adminFeedback === "string" &&
+    project.adminFeedback.trim().length > 0
+)
+                
+{
     const feedbackNotice = document.createElement("p");
 
     feedbackNotice.textContent =
