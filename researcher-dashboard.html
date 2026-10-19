@@ -1067,6 +1067,35 @@ detailsButton.addEventListener("click", () => {
 // ADD CONTENT TO PROJECT CARD
 projectCard.appendChild(title);
 projectCard.appendChild(status);
+                
+const normalizedStatus = String(
+    project.status || "pending"
+).toLowerCase().replace(/[\s-]+/g, "_");
+
+const statusMessages = {
+    pending: "⏳ Your project is awaiting administrator review.",
+    approved: "✅ Your project has been approved.",
+    active: "🚀 Your research project is underway.",
+    in_progress: "🚀 Your research project is underway.",
+    completed: "🎉 Your research project has been completed.",
+    rejected: "⚠️ Your project was not approved. Please review administrator feedback."
+};
+
+const statusMessage = statusMessages[normalizedStatus];
+
+if (statusMessage) {
+    const statusNotice = document.createElement("p");
+    statusNotice.textContent = statusMessage;
+    statusNotice.style.padding = "10px";
+    statusNotice.style.margin = "8px 0";
+    statusNotice.style.borderRadius = "6px";
+    statusNotice.style.background = "#fff3e0";
+    statusNotice.style.color = "#8a4b08";
+    statusNotice.style.fontSize = "14px";
+
+    projectCard.appendChild(statusNotice);
+}
+
 projectCard.appendChild(location);
 projectCard.appendChild(respondents);
 projectCard.appendChild(submitted);
