@@ -486,12 +486,14 @@ opacity: 1;
                     needs and target audience.
                 </p>
 
-                <button
+                
+<button
     type="button"
-    onclick="editingProjectId = null; document.getElementById('researchProjectForm').reset(); document.getElementById('projectFormTitle').textContent = 'Submit a Research Project'; document.getElementById('projectSubmitButton').textContent = 'Submit Research Project'; document.getElementById('projectForm').style.display = 'block';"
+    id="openProjectFormButton"
 >
     Submit Project
 </button>
+
 
             </div>
 
@@ -706,14 +708,14 @@ opacity: 1;
 
 </form>
 
-        <button
-            type="button"
-            onclick="document.getElementById('projectForm').style.display = 'none';"
-        >
-            Close Form
-        </button>
+        
+<button
+    type="button"
+    id="closeProjectFormButton"
+>
+    Close Form
+</button>
 
-    </section>
 
     </main>
 
@@ -1292,6 +1294,55 @@ projectsList.appendChild(projectCard);
         // Stores the ID of a rejected project being edited.
 // Null means the client is submitting a new project.
 let editingProjectId = null;
+        
+
+const openProjectFormButton =
+    document.getElementById("openProjectFormButton");
+
+const closeProjectFormButton =
+    document.getElementById("closeProjectFormButton");
+
+const projectFormSection =
+    document.getElementById("projectForm");
+
+// OPEN A NEW PROJECT FORM
+openProjectFormButton.addEventListener("click", () => {
+
+    editingProjectId = null;
+
+    researchProjectForm.reset();
+
+    document.getElementById("projectFormTitle").textContent =
+        "Submit a Research Project";
+
+    document.getElementById("projectSubmitButton").textContent =
+        "Submit Research Project";
+
+    projectFormSection.style.display = "block";
+
+    projectFormSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+});
+
+// CLOSE THE FORM AND CANCEL EDITING MODE
+closeProjectFormButton.addEventListener("click", () => {
+
+    editingProjectId = null;
+
+    researchProjectForm.reset();
+
+    document.getElementById("projectFormTitle").textContent =
+        "Submit a Research Project";
+
+    document.getElementById("projectSubmitButton").textContent =
+        "Submit Research Project";
+
+    projectFormSection.style.display = "none";
+
+});
 
 const researchProjectForm =
     document.getElementById("researchProjectForm");
