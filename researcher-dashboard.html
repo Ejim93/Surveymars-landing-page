@@ -816,6 +816,10 @@ async function loadResearchProjects(user) {
         );
 
         const snapshot = await getDocs(projectsQuery);
+        
+console.log("Logged-in client UID:", user.uid);
+console.log("Firebase project ID:", app.options.projectId);
+        
         console.log("SurveyMars project count:", snapshot.size);
 
         // Update Total Projects statistic
