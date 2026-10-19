@@ -1072,7 +1072,7 @@ const normalizedStatus = String(
     project.status || "pending"
 ).toLowerCase().replace(/[\s-]+/g, "_");
 
-const statusMessages = {
+const projectStatusMessages = {
     pending: "⏳ Your project is awaiting administrator review.",
     approved: "✅ Your project has been approved.",
     active: "🚀 Your research project is underway.",
@@ -1081,7 +1081,7 @@ const statusMessages = {
     rejected: "⚠️ Your project was not approved. Please review administrator feedback."
 };
 
-const statusMessage = statusMessages[normalizedStatus];
+const statusMessage = projectStatusMessages[normalizedStatus];
 
 if (statusMessage) {
     const statusNotice = document.createElement("p");
