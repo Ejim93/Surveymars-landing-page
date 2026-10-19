@@ -1223,6 +1223,61 @@ async function loadResearchProjects() {
                 card, "Research Objectives",
                 project.researchObjectives
             );
+            
+            // ADMINISTRATOR FEEDBACK
+            const feedbackLabel = document.createElement("label");
+            feedbackLabel.textContent = "Message to Client:";
+
+            const feedbackInput = document.createElement("textarea");
+            feedbackInput.value = project.adminFeedback || "";
+            feedbackInput.placeholder =
+                "Enter feedback or instructions for the client...";
+            feedbackInput.rows = 3;
+            feedbackInput.style.display = "block";
+            feedbackInput.style.width = "100%";
+            feedbackInput.style.boxSizing = "border-box";
+            feedbackInput.style.marginTop = "8px";
+            feedbackInput.style.marginBottom = "10px";
+
+            const saveFeedbackButton = document.createElement("button");
+            saveFeedbackButton.type = "button";
+            saveFeedbackButton.textContent = "Save Feedback";
+
+            saveFeedbackButton.addEventListener("click", async () => {
+                const feedback = feedbackInput.value.trim();
+
+                saveFeedbackButton.disabled = true;
+                researchProjectMessage.textContent =
+                    "Saving administrator feedback...";
+
+                try {
+                    await updateDoc(
+                        doc(db, "researchProjects", projectSnapshot.id),
+                        {
+                            adminFeedback: feedback,
+                            feedbackUpdatedAt: serverTimestamp()
+                        }
+                    );
+
+                    researchProjectMessage.textContent =
+                        "Administrator feedback saved successfully.";
+
+                } catch (error) {
+                    console.error("SAVE FEEDBACK ERROR:", error);
+
+                    researchProjectMessage.textContent =
+                        "Could not save feedback: " +
+                        (error.code || error.message);
+
+                } finally {
+                    saveFeedbackButton.disabled = false;
+                }
+            });
+
+            card.appendChild(feedbackLabel);
+            card.appendChild(feedbackInput);
+            card.appendChild(saveFeedbackButton);
+
 
             
 if (project.status === "pending") {
