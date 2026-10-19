@@ -1317,6 +1317,9 @@ openProjectFormButton.addEventListener("click", () => {
 
     document.getElementById("projectSubmitButton").textContent =
         "Submit Research Project";
+    if (auth.currentUser) {
+    await loadResearchProjects(auth.currentUser);
+}
 
     projectFormSection.style.display = "block";
 
