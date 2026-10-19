@@ -1069,6 +1069,27 @@ projectCard.appendChild(status);
 projectCard.appendChild(location);
 projectCard.appendChild(respondents);
 projectCard.appendChild(submitted);
+                
+ // ADMINISTRATOR FEEDBACK NOTIFICATION
+if (
+    project.adminFeedback &&
+    project.adminFeedback.trim() !== ""
+) {
+    const feedbackNotice = document.createElement("p");
+
+    feedbackNotice.textContent =
+        "📩 Administrator Feedback Available";
+
+    feedbackNotice.style.background = "#fff3e0";
+    feedbackNotice.style.color = "#8a4b08";
+    feedbackNotice.style.padding = "10px";
+    feedbackNotice.style.borderRadius = "6px";
+    feedbackNotice.style.fontWeight = "bold";
+    feedbackNotice.style.marginTop = "10px";
+
+    projectCard.appendChild(feedbackNotice);
+}
+
 
 projectCard.appendChild(detailsButton);
 projectCard.appendChild(detailsPanel);
