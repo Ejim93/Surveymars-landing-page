@@ -743,8 +743,9 @@ import {
     query,
     where,
     getDocs,
+    doc,
+    updateDoc
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
 
 const firebaseConfig = {
 
@@ -1070,27 +1071,88 @@ projectCard.appendChild(location);
 projectCard.appendChild(respondents);
 projectCard.appendChild(submitted);
                 
+ 
  // ADMINISTRATOR FEEDBACK NOTIFICATION
 if (
     typeof project.adminFeedback === "string" &&
     project.adminFeedback.trim().length > 0
-)
-                
-{
-    const feedbackNotice = document.createElement("p");
-
-    feedbackNotice.textContent =
-        "📩 Administrator Feedback Available";
+) {
+    const feedbackNotice = document.createElement("div");
 
     feedbackNotice.style.background = "#fff3e0";
     feedbackNotice.style.color = "#8a4b08";
-    feedbackNotice.style.padding = "10px";
+    feedbackNotice.style.padding = "12px";
     feedbackNotice.style.borderRadius = "6px";
-    feedbackNotice.style.fontWeight = "bold";
     feedbackNotice.style.marginTop = "10px";
+
+    // Check whether the latest feedback was read
+    const feedbackUpdatedAt = project.feedbackUpdatedAt;
+    const feedbackReadAt = project.feedbackReadAt;
+
+    const feedbackAlreadyRead =
+        feedbackUpdatedAt &&
+        feedbackReadAt &&
+        feedbackReadAt.toMillis() >= feedbackUpdatedAt.toMillis();
+
+    const feedbackNoticeText = document.createElement("p");
+
+    feedbackNoticeText.textContent = feedbackAlreadyRead
+        ? "✅ Administrator Feedback Read"
+        : "📩 Administrator Feedback Available";
+
+    feedbackNoticeText.style.fontWeight = "bold";
+    feedbackNoticeText.style.marginBottom = "10px";
+
+    feedbackNotice.appendChild(feedbackNoticeText);
+
+    if (!feedbackAlreadyRead) {
+        const markReadButton = document.createElement("button");
+
+        markReadButton.type = "button";
+        markReadButton.textContent = "Mark as Read";
+        markReadButton.style.padding = "9px 14px";
+        markReadButton.style.background = "#ff9800";
+        markReadButton.style.color = "#ffffff";
+        markReadButton.style.border = "none";
+        markReadButton.style.borderRadius = "5px";
+        markReadButton.style.cursor = "pointer";
+
+        markReadButton.addEventListener("click", async () => {
+            markReadButton.disabled = true;
+            markReadButton.textContent = "Saving...";
+
+            try {
+                await updateDoc(
+                    doc(db, "researchProjects", documentSnapshot.id),
+                    {
+                        feedbackReadAt: serverTimestamp()
+                    }
+                );
+
+                feedbackNoticeText.textContent =
+                    "✅ Administrator Feedback Read";
+
+                markReadButton.remove();
+
+            } catch (error) {
+                console.error("MARK FEEDBACK READ ERROR:", error);
+
+                markReadButton.disabled = false;
+                markReadButton.textContent = "Mark as Read";
+
+                alert(
+                    "Could not mark feedback as read: " +
+                    (error.code || error.message)
+                );
+            }
+        });
+
+        feedbackNotice.appendChild(markReadButton);
+    }
 
     projectCard.appendChild(feedbackNotice);
 }
+
 
 
 projectCard.appendChild(detailsButton);
