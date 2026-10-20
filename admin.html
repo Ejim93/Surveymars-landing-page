@@ -216,6 +216,7 @@
     serverTimestamp,
     doc,
     updateDoc,
+    setDoc
     deleteDoc,
     where,
     query,
@@ -1417,40 +1418,23 @@ async function saveResearchResults(
         projectId
     );
 
-    const resultsData = {
-        projectId: projectId,
-        clientUid: clientUid,
-        researchResultsSummary: summary,
-        researchResponseCount: responseCount,
-        researchReportUrl: reportUrl,
-        resultsPublished: publish,
-        resultsPublishedAt: publish
-            ? serverTimestamp()
-            : null,
-        updatedAt: serverTimestamp()
-    };
-
-    const existingResults = await getDocs(
-        query(
-            collection(db, "researchResults"),
-            where("projectId", "==", projectId)
-        )
+    await setDoc(
+        resultsRef,
+        {
+            projectId: projectId,
+            clientUid: clientUid,
+            researchResultsSummary: summary,
+            researchResponseCount: responseCount,
+            researchReportUrl: reportUrl,
+            resultsPublished: publish,
+            resultsPublishedAt: publish
+                ? serverTimestamp()
+                : null,
+            updatedAt: serverTimestamp()
+        },
+        { merge: true }
     );
-
-    if (existingResults.empty) {
-        await import("https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js")
-            .then(async (firestore) => {
-                await firestore.setDoc(
-                    resultsRef,
-                    resultsData
-                );
-            });
-    } else {
-        await updateDoc(
-            resultsRef,
-            resultsData
-        );
-    }
+}
 }
 
 </script>
