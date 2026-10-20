@@ -1071,9 +1071,12 @@ detailsButton.addEventListener("click", () => {
 });
 
 // ADD CONTENT TO PROJECT CARD
+                const normalizedStatus = String(
+    project.status || "pending"
+).toLowerCase().replace(/[\s-]+/g, "_");
 projectCard.appendChild(title);
 projectCard.appendChild(status);
-                // EDIT AND RESUBMIT REJECTED PROJECTS ONLY
+// EDIT AND RESUBMIT REJECTED PROJECTS ONLY
 if (normalizedStatus === "rejected") {
 
     const editButton = document.createElement("button");
@@ -1146,11 +1149,6 @@ if (normalizedStatus === "rejected") {
 
     projectCard.appendChild(editButton);
 }
-                
-const normalizedStatus = String(
-    project.status || "pending"
-).toLowerCase().replace(/[\s-]+/g, "_");
-
 const projectStatusMessages = {
     pending: "⏳ Your project is awaiting administrator review.",
     approved: "✅ Your project has been approved.",
