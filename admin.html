@@ -209,20 +209,23 @@
     } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
     import {
+    
+import {
     getFirestore,
     collection,
     addDoc,
     getDocs,
+    getDoc,
     serverTimestamp,
     doc,
     updateDoc,
-    setDoc
+    setDoc,
     deleteDoc,
     where,
     query,
     runTransaction
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-    
+
     // ==============================
     // FIREBASE CONFIGURATION
     // ==============================
@@ -1281,6 +1284,158 @@ async function loadResearchProjects() {
             card.appendChild(feedbackLabel);
             card.appendChild(feedbackInput);
             card.appendChild(saveFeedbackButton);
+            
+            // RESEARCH RESULTS PUBLISHING
+            const resultsHeading = document.createElement("h3");
+            resultsHeading.textContent = "📈 Research Results";
+
+            const resultsSummary = document.createElement("textarea");
+            resultsSummary.placeholder =
+                "Enter the research findings summary...";
+            resultsSummary.rows = 4;
+            resultsSummary.style.width = "100%";
+            resultsSummary.style.boxSizing = "border-box";
+
+            const resultsCount = document.createElement("input");
+            resultsCount.type = "number";
+            resultsCount.min = "0";
+            resultsCount.placeholder = "Number of responses";
+            resultsCount.style.width = "100%";
+            resultsCount.style.boxSizing = "border-box";
+
+            const reportUrl = document.createElement("input");
+            reportUrl.type = "url";
+            reportUrl.placeholder =
+                "Optional report URL (https://...)";
+            reportUrl.style.width = "100%";
+            reportUrl.style.boxSizing = "border-box";
+
+            const resultsStatus = document.createElement("p");
+            resultsStatus.textContent = "Loading saved results...";
+
+            const saveDraftButton = document.createElement("button");
+            saveDraftButton.type = "button";
+            saveDraftButton.textContent = "Save Results Draft";
+
+            const publishResultsButton = document.createElement("button");
+            publishResultsButton.type = "button";
+            publishResultsButton.textContent = "Publish Results";
+
+            try {
+                const savedResultsSnapshot = await getDoc(
+                    doc(db, "researchResults", projectSnapshot.id)
+                );
+
+                if (savedResultsSnapshot.exists()) {
+                    const savedResults = savedResultsSnapshot.data();
+
+                    resultsSummary.value =
+                        savedResults.researchResultsSummary || "";
+
+                    resultsCount.value =
+                        savedResults.researchResponseCount ?? "";
+
+                    reportUrl.value =
+                        savedResults.researchReportUrl || "";
+
+                    resultsStatus.textContent =
+                        savedResults.resultsPublished === true
+                            ? "Results are published."
+                            : "Results are saved as a draft.";
+                } else {
+                    resultsStatus.textContent =
+                        "No results saved yet.";
+                }
+            } catch (error) {
+                console.error("LOAD RESEARCH RESULTS ERROR:", error);
+                resultsStatus.textContent =
+                    "Unable to load saved results.";
+            }
+
+            async function handleSaveResults(publish) {
+                const summary = resultsSummary.value.trim();
+                const countText = resultsCount.value.trim();
+                const url = reportUrl.value.trim();
+                const count = Number(countText);
+
+                if (!summary) {
+                    alert("Please enter a research findings summary.");
+                    return;
+                }
+
+                if (
+                    countText === "" ||
+                    !Number.isInteger(count) ||
+                    count < 0
+                ) {
+                    alert("Please enter a valid response count (zero or more).");
+                    return;
+                }
+
+                if (
+                    url &&
+                    (!/^https:\/\//i.test(url))
+                ) {
+                    alert("Please enter a valid HTTPS report URL.");
+                    return;
+                }
+
+                if (!project.clientUid) {
+                    alert("This project has no client UID. Results cannot be saved.");
+                    return;
+                }
+
+                const confirmed = publish
+                    ? confirm("Publish these results for this client now?")
+                    : true;
+
+                if (!confirmed) return;
+
+                saveDraftButton.disabled = true;
+                publishResultsButton.disabled = true;
+                resultsStatus.textContent =
+                    publish ? "Publishing results..." : "Saving draft...";
+
+                try {
+                    await saveResearchResults(
+                        projectSnapshot.id,
+                        project.clientUid,
+                        summary,
+                        count,
+                        url,
+                        publish
+                    );
+
+                    resultsStatus.textContent = publish
+                        ? "Results published successfully."
+                        : "Results draft saved successfully.";
+                } catch (error) {
+                    console.error("SAVE RESEARCH RESULTS ERROR:", error);
+                    resultsStatus.textContent =
+                        "Could not save results: " +
+                        (error.code || error.message);
+                } finally {
+                    saveDraftButton.disabled = false;
+                    publishResultsButton.disabled = false;
+                }
+            }
+
+            saveDraftButton.addEventListener("click", () => {
+                handleSaveResults(false);
+            });
+
+            publishResultsButton.addEventListener("click", () => {
+                handleSaveResults(true);
+            });
+
+            card.appendChild(resultsHeading);
+            card.appendChild(resultsSummary);
+            card.appendChild(resultsCount);
+            card.appendChild(reportUrl);
+            card.appendChild(resultsStatus);
+            card.appendChild(saveDraftButton);
+            card.appendChild(publishResultsButton);
+
 
 
             
