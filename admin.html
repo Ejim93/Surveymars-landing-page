@@ -1165,7 +1165,7 @@ async function loadResearchProjects() {
 
         let pendingCount = 0;
 
-        snapshot.forEach((projectSnapshot) => {
+        snapshot.forEach(async (projectSnapshot) => {
             const project = projectSnapshot.data();
 
             const card = document.createElement("div");
