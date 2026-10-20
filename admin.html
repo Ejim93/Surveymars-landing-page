@@ -1403,6 +1403,56 @@ async function updateResearchProjectStatus(projectId, newStatus) {
     }
 }
 
+async function saveResearchResults(
+    projectId,
+    clientUid,
+    summary,
+    responseCount,
+    reportUrl,
+    publish
+) {
+    const resultsRef = doc(
+        db,
+        "researchResults",
+        projectId
+    );
+
+    const resultsData = {
+        projectId: projectId,
+        clientUid: clientUid,
+        researchResultsSummary: summary,
+        researchResponseCount: responseCount,
+        researchReportUrl: reportUrl,
+        resultsPublished: publish,
+        resultsPublishedAt: publish
+            ? serverTimestamp()
+            : null,
+        updatedAt: serverTimestamp()
+    };
+
+    const existingResults = await getDocs(
+        query(
+            collection(db, "researchResults"),
+            where("projectId", "==", projectId)
+        )
+    );
+
+    if (existingResults.empty) {
+        await import("https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js")
+            .then(async (firestore) => {
+                await firestore.setDoc(
+                    resultsRef,
+                    resultsData
+                );
+            });
+    } else {
+        await updateDoc(
+            resultsRef,
+            resultsData
+        );
+    }
+}
+
 </script>
 
 </body>
