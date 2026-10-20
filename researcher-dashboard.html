@@ -666,7 +666,11 @@ opacity: 1;
 
     <input
         type="text"
-        id="targetLocation"
+    <input
+    type="hidden"
+    id="targetLocation"
+    name="targetLocation"
+>
         name="targetLocation"
         placeholder="Country, state, or city"
         required
@@ -961,7 +965,7 @@ audience.textContent =
     "Target Audience: " +
     (project.targetAudience || "Not specified");
 
-no// CLIENT EMAIL
+// CLIENT EMAIL
 const email = document.createElement("p");
 email.textContent =
     "Client Email: " +
@@ -1317,10 +1321,6 @@ openProjectFormButton.addEventListener("click", () => {
 
     document.getElementById("projectSubmitButton").textContent =
         "Submit Research Project";
-    if (auth.currentUser) {
-    await loadResearchProjects(auth.currentUser);
-}
-
     projectFormSection.style.display = "block";
 
     projectFormSection.scrollIntoView({
