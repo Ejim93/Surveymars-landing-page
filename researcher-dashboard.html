@@ -778,6 +778,7 @@ import {
     query,
     where,
     getDocs,
+    getDoc,
     doc,
     updateDoc
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
@@ -828,8 +829,111 @@ onAuthStateChanged(auth, (user) => {
 });
 
 const db = getFirestore(app);
+        
 
-        // ==========================================
+async function loadPublishedResearchResults(user) {
+    const resultsList = document.getElementById(
+        "researchResultsList"
+    );
+
+    resultsList.textContent = "Loading published results...";
+
+    try {
+        // Find only this client's research projects.
+        const projectsQuery = query(
+            collection(db, "researchProjects"),
+            where("clientUid", "==", user.uid)
+        );
+
+        const projectsSnapshot = await getDocs(projectsQuery);
+
+        resultsList.replaceChildren();
+
+        let publishedCount = 0;
+
+        // Each results document uses its project's document ID.
+        for (const projectSnapshot of projectsSnapshot.docs) {
+            const resultsRef = doc(
+                db,
+                "researchResults",
+                projectSnapshot.id
+            );
+
+            const resultsSnapshot = await getDoc(resultsRef);
+
+            if (!resultsSnapshot.exists()) {
+                continue;
+            }
+
+            const results = resultsSnapshot.data();
+
+            // Never display drafts to clients.
+            if (
+                results.projectId !== projectSnapshot.id ||
+                results.clientUid !== user.uid ||
+                results.resultsPublished !== true
+            ) {
+                continue;
+            }
+
+            const card = document.createElement("div");
+            card.className = "panel";
+
+            const heading = document.createElement("h3");
+            heading.textContent =
+                projectSnapshot.data().projectTitle ||
+                "Research Results";
+
+            const summary = document.createElement("p");
+            summary.textContent =
+                results.researchResultsSummary || "No summary available.";
+            summary.style.whiteSpace = "pre-wrap";
+
+            const count = document.createElement("p");
+            count.textContent =
+                "Number of responses: " +
+                Number(results.researchResponseCount || 0);
+
+            card.appendChild(heading);
+            card.appendChild(summary);
+            card.appendChild(count);
+
+            if (results.researchReportUrl) {
+                const reportUrl = results.researchReportUrl;
+
+                // Accept HTTPS report links only.
+                if (/^https:\/\//i.test(reportUrl)) {
+                    const reportLink = document.createElement("a");
+                    reportLink.href = reportUrl;
+                    reportLink.target = "_blank";
+                    reportLink.rel = "noopener noreferrer";
+                    reportLink.textContent = "Open Research Report";
+
+                    card.appendChild(reportLink);
+                }
+            }
+
+            resultsList.appendChild(card);
+            publishedCount++;
+        }
+
+        if (publishedCount === 0) {
+            resultsList.textContent =
+                "No published research results are available for your projects yet.";
+        }
+
+    } catch (error) {
+        console.error(
+            "LOAD PUBLISHED RESULTS ERROR:",
+            error
+        );
+
+        resultsList.textContent =
+            "Unable to load research results. Please try again later.";
+    }
+}
+
+// ==========================================
 // LOAD CLIENT RESEARCH PROJECTS
 // ==========================================
 
