@@ -1494,6 +1494,52 @@ if (project.status === "pending") {
 }
 
 
+            // PROJECT LIFECYCLE CONTROLS
+
+            if (
+                project.status === "approved" ||
+                project.status === "active" ||
+                project.status === "in_progress"
+            ) {
+                const lifecycleButton =
+                    document.createElement("button");
+
+                lifecycleButton.type = "button";
+
+                if (project.status === "approved") {
+                    lifecycleButton.textContent =
+                        "Start Project";
+                } else {
+                    lifecycleButton.textContent =
+                        "Mark Completed";
+                }
+
+                lifecycleButton.style.marginTop = "10px";
+
+                lifecycleButton.addEventListener(
+                    "click",
+                    async () => {
+                        const nextStatus =
+                            project.status === "approved"
+                                ? "active"
+                                : "completed";
+
+                        lifecycleButton.disabled = true;
+
+                        try {
+                            await updateResearchProjectStatus(
+                                projectSnapshot.id,
+                                nextStatus
+                            );
+                        } finally {
+                            lifecycleButton.disabled = false;
+                        }
+                    }
+                );
+
+                card.appendChild(lifecycleButton);
+            }
+
             researchProjectList.appendChild(card);
         });
 
@@ -1514,7 +1560,65 @@ if (project.status === "pending") {
     }
 }
 
+
 async function updateResearchProjectStatus(projectId, newStatus) {
+    const allowedStatuses = [
+        "approved",
+        "rejected",
+        "active",
+        "completed"
+    ];
+
+    if (!allowedStatuses.includes(newStatus)) {
+        researchProjectMessage.textContent =
+            "Invalid project status.";
+        return;
+    }
+
+    const actionMessages = {
+        approved: "approve this research project",
+        rejected: "reject this research project",
+        active: "start this research project",
+        completed: "mark this research project as completed"
+    };
+
+    const confirmed = confirm(
+        "Are you sure you want to " +
+        actionMessages[newStatus] + "?"
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+        researchProjectMessage.textContent =
+            "Updating project status...";
+
+        await updateDoc(
+            doc(db, "researchProjects", projectId),
+            {
+                status: newStatus
+            }
+        );
+
+        researchProjectMessage.textContent =
+            "Project status updated successfully.";
+
+        await loadResearchProjects();
+
+    } catch (error) {
+        console.error(
+            "UPDATE RESEARCH PROJECT ERROR:",
+            error
+        );
+
+        researchProjectMessage.textContent =
+            "Could not update project: " +
+            (error.code || error.message);
+    }
+}
+
     if (newStatus !== "approved" && newStatus !== "rejected") {
         return;
     }
